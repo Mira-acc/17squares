@@ -1,0 +1,402 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Q}{Q}
+\newcommand{\interior}{\operatorname{int}}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norminf}[1]{\left\lVert #1\right\rVert_{\infty}}
+
+\title{An Exact Computer-Assisted Lower Bound for\\Packing 17 Unit Squares in a Square}
+\author{Mira\\\small \url{https://github.com/Mira-acc/17squares}}
+\date{August 2026}
+
+\hypersetup{
+  pdftitle={An Exact Computer-Assisted Lower Bound for Packing 17 Unit Squares in a Square},
+  pdfauthor={Mira},
+  pdfsubject={Computer-assisted discrete geometry},
+  pdfkeywords={square packing, unavoidable points, computer-assisted proof, exact arithmetic}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $s(n)$ denote the least side length of a square that contains $n$ pairwise
+interior-disjoint unit squares, with arbitrary orientations.  We prove by an
+exact computer-assisted argument that
+\[
+  s(17) > \frac{4\,450\,837}{1\,000\,000}=4.450837.
+\]
+The previous lower bound recorded in Friedman's survey was
+$(40\sqrt2+19)/17\approx4.4452083821$.  Our proof gives sixteen rational
+points in the square of side $4.450837$ and certifies that every contained unit
+square, at every orientation, contains one of these points strictly in its
+interior.  The result then follows by the pigeonhole principle.  The universal
+geometric assertion is checked by a $3{,}341{,}159$-node recursive bisection of
+the three-dimensional pose space.  All decisive comparisons are exact integer
+inequalities.  A fast C++ checker and separately implemented arbitrary-precision
+C++ and Python checkers validate the same certificate.
+\end{abstract}
+
+\section{Introduction}
+
+For $L>0$, write
+\[
+  \Q_L=[0,L]^2.
+\]
+Let $s(n)$ be the minimum $L$ for which $n$ pairwise interior-disjoint unit
+squares can be placed in $\Q_L$, with arbitrary translations and rotations.
+The minimum is attained by the standard compactness argument: centers and
+orientations range over a compact parameter space, and the containment and
+nonoverlap constraints are closed.  This classical packing problem has a long
+history; Friedman's dynamic survey
+collects the principal constructions and lower-bound methods\cite{Friedman2009}.
+For $n=17$, the survey records the lower bound
+\[
+  s(17)\ge \frac{40\sqrt2+19}{17}
+  =4.445208382054341\ldots,
+\]
+attributed there to Trevor Green.  The best known construction is due to John
+Bidwell and has side approximately
+$4.67553009360455$\cite{Friedman2009,Ellsworth2026}.
+
+Our result is the following.
+
+\begin{theorem}\label{thm:main}
+No packing of seventeen unit squares exists in $\Q_L$ for
+\[
+  L=\frac{4\,450\,837}{1\,000\,000}.
+\]
+Consequently,
+\[
+  s(17)>4.450837.
+\]
+\end{theorem}
+
+The improvement over the previously recorded lower bound is approximately
+$0.00562861795$.  The proof uses the unavoidable-point method associated with
+Stromquist and developed in this setting by Friedman\cite{Friedman2009,Stromquist2003}.
+The new contribution is an explicit rational point set together with an exact,
+independently checkable certificate covering the full continuum of square
+positions and orientations.
+
+\section{Strictly unavoidable points}
+
+\begin{definition}
+A finite set $P\subseteq \Q_L$ is \emph{strictly unavoidable for unit squares}
+if every unit square $U\subseteq \Q_L$ satisfies
+\[
+  P\cap\interior(U)\ne\varnothing.
+\]
+\end{definition}
+
+\begin{lemma}[Pigeonhole lemma]\label{lem:pigeonhole}
+If $\Q_L$ contains a strictly unavoidable set of $n-1$ points, then no packing
+of $n$ pairwise interior-disjoint unit squares exists in $\Q_L$.
+\end{lemma}
+
+\begin{proof}
+Suppose $U_1,\dots,U_n$ were such a packing.  For each $i$, choose
+$p_i\in P\cap\interior(U_i)$.  If $p_i=p_j$ for $i\ne j$, then that point lies
+in both square interiors, contradicting interior-disjointness.  Thus the map
+$i\mapsto p_i$ is an injection from an $n$-element set into an $(n-1)$-element
+set, which is impossible.
+\end{proof}
+
+The use of interiors is important.  Boundary witnesses could be shared by
+several touching squares and would not imply the injection in
+Lemma~\ref{lem:pigeonhole}.
+
+For Theorem~\ref{thm:main}, the set $P$ consists of the sixteen rational points
+in Table~\ref{tab:points}.  Every displayed decimal is exact, with denominator
+$10^6$.
+
+\begin{table}[t]
+\centering
+\caption{The sixteen rational witness points.}
+\label{tab:points}
+\small
+\setlength{\tabcolsep}{8pt}
+\begin{tabular}{rcc@{\qquad}rcc}
+\toprule
+$i$ & $x_i$ & $y_i$ & $i$ & $x_i$ & $y_i$\\
+\midrule
+ 1 & 0.967095 & 0.988674 &  9 & 0.925919 & 2.658468\\
+ 2 & 1.584591 & 0.989280 & 10 & 1.494140 & 2.660211\\
+ 3 & 2.477806 & 0.929750 & 11 & 2.483891 & 2.663100\\
+ 4 & 3.452882 & 0.920541 & 12 & 3.452714 & 2.667020\\
+ 5 & 0.998081 & 1.794317 & 13 & 0.998038 & 3.524908\\
+ 6 & 1.992852 & 1.799448 & 14 & 1.963307 & 3.513845\\
+ 7 & 2.973306 & 1.794450 & 15 & 2.850741 & 3.459296\\
+ 8 & 3.522479 & 1.795033 & 16 & 3.456188 & 3.456188\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=1.25cm,y=1.25cm]
+  \draw[line width=0.7pt] (0,0) rectangle (4.450837,4.450837);
+  \foreach \g in {1,2,3,4} {
+    \draw[gray!25,thin] (\g,0) -- (\g,4.450837);
+    \draw[gray!25,thin] (0,\g) -- (4.450837,\g);
+  }
+  \foreach \x/\y/\n in {
+    0.967095/0.988674/1,1.584591/0.989280/2,
+    2.477806/0.929750/3,3.452882/0.920541/4,
+    0.998081/1.794317/5,1.992852/1.799448/6,
+    2.973306/1.794450/7,3.522479/1.795033/8,
+    0.925919/2.658468/9,1.494140/2.660211/10,
+    2.483891/2.663100/11,3.452714/2.667020/12,
+    0.998038/3.524908/13,1.963307/3.513845/14,
+    2.850741/3.459296/15,3.456188/3.456188/16}
+  {
+    \fill (\x,\y) circle[radius=1.35pt];
+    \node[font=\scriptsize,anchor=south west,inner sep=1.2pt] at (\x,\y) {\n};
+  }
+  \node[font=\small,anchor=north] at (2.2254185,-0.12) {$L=4.450837$};
+\end{tikzpicture}
+\caption{The witness set in the containing square.  The arrangement is close
+to a distorted $4\times4$ grid, but the proof uses the exact rational
+coordinates in Table~\ref{tab:points}.}
+\label{fig:points}
+\end{figure}
+
+\section{Parameterizing a unit square}
+
+A unit square is unchanged by a rotation through $\pi/2$.  We may therefore
+represent every orientation by an angle
+\[
+  -\frac{\pi}{4}\le \theta\le\frac{\pi}{4},
+  \qquad t=\tan\theta\in[-1,1].
+\]
+Let $(x,y)$ be the center of the square, and let $p=(p_x,p_y)$ be a fixed
+point.  Put
+\[
+  \Delta x=p_x-x,\qquad \Delta y=p_y-y,
+  \qquad r=\sqrt{1+t^2}.
+\]
+In coordinates aligned with the square, the displacement from the center to
+$p$ is
+\[
+  \left(\frac{\Delta x+t\Delta y}{r},
+        \frac{-t\Delta x+\Delta y}{r}\right).
+\]
+Consequently, $p$ lies strictly inside the square exactly when
+\begin{align}
+  4(\Delta x+t\Delta y)^2 &< 1+t^2,\label{eq:inside-a}\\
+  4(-t\Delta x+\Delta y)^2 &< 1+t^2.\label{eq:inside-b}
+\end{align}
+
+The axis-parallel half-extent of a unit square with parameter $t$ is
+\[
+  h(t)=\frac{1+\abs{t}}{2\sqrt{1+t^2}}.
+\]
+Thus containment in $\Q_L$ requires
+\[
+  h(t)\le x,y\le L-h(t).
+\]
+The function $u\mapsto(1+u)/(2\sqrt{1+u^2})$ is nondecreasing on $[0,1]$.
+This monotonicity supplies a simple exact test for pose boxes that cannot
+contain any feasible square.
+
+\section{The subdivision certificate}\label{sec:certificate}
+
+The pose space is parameterized by $(x,y,t)$.  The checker begins with the
+rational box
+\[
+  \mathcal B_0=
+  \left[\frac12,L-\frac12\right]^2\times[-1,1],
+\]
+which contains every feasible pose.  It recursively bisects boxes in one of
+the three coordinates.  Each node is encoded by one byte:
+
+\begin{center}
+\begin{tabular}{cl}
+\toprule
+Byte & Meaning\\
+\midrule
+$0$ & the current box contains no feasible square pose;\\
+$1,\dots,16$ & the indicated point lies strictly inside every pose in the box;\\
+$17,18,19$ & bisect the box in $x$, $y$, or $t$, respectively.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The verifier distrusts every leaf claim and recomputes it from the box
+endpoints.
+
+\subsection{Infeasible leaves}
+
+For a box
+\[
+  \mathcal B=[x_0,x_1]\times[y_0,y_1]\times[t_0,t_1],
+\]
+let
+\[
+  u=\min\{\abs t:t\in[t_0,t_1]\}.
+\]
+Since $h(t)\ge h(u)$ throughout the box, the box is infeasible if any one of
+\[
+  x_1<h(u),\quad L-x_0<h(u),\quad
+  y_1<h(u),\quad L-y_0<h(u)
+\]
+holds.  The checker clears denominators and squares nonnegative quantities, so
+this test is performed using integers only.
+
+\subsection{Witness leaves}
+
+Fix a witness point $p$.  Exact interval arithmetic over $\mathcal B$ gives
+intervals containing
+\[
+  A=\Delta x+t\Delta y,
+  \qquad B=-t\Delta x+\Delta y.
+\]
+Write $M_A$ and $M_B$ for the maximum absolute endpoint of these intervals.
+Because $1+t^2\ge1+u^2$ throughout the box, the two strict inequalities
+\[
+  4M_A^2<1+u^2,
+  \qquad 4M_B^2<1+u^2
+\]
+prove simultaneously that $p$ is strictly inside every square represented by
+that box.  Again, the implementation stores rational endpoints on fixed grids
+and clears every denominator before comparison.
+
+The interval enclosure for the bilinear term $t\Delta y$ is obtained by taking
+the minimum and maximum of its four corner products; the same is done for
+$(-t)\Delta x$.  No floating-point approximation enters a leaf decision.
+
+\subsection{Completeness of the tree}
+
+The checker traverses the tree from $\mathcal B_0$, applying every split exactly.
+It rejects an early end of file, an unknown opcode, a false leaf claim, or any
+trailing byte.  Finally it checks the full-binary-tree identity
+\[
+  \#\text{leaves}=\#\text{split nodes}+1.
+\]
+It follows inductively that the accepted leaves form a cover of the complete
+root box.  Every feasible pose is therefore covered by a witness leaf, proving
+that the sixteen points are strictly unavoidable.
+
+Lemma~\ref{lem:pigeonhole} now rules out a packing in $\Q_L$, and therefore in
+every smaller container as well.  Thus $s(17)\ge L$.  The minimum defining
+$s(17)$ is attained by compactness, so equality would give a packing in
+$\Q_L$.  Hence $s(17)>L$, proving Theorem~\ref{thm:main}.
+
+\section{Exact arithmetic and reproducibility}
+
+The certificate uses the scales
+\[
+  S_t=2^{40},\qquad S_x=10^6\,2^{40}.
+\]
+The center and slope endpoints are stored as integers on these fixed rational
+grids, while the witness points have denominator $10^6$.  The accepted tree has
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Total nodes & $3{,}341{,}159$\\
+Split nodes & $1{,}670{,}579$\\
+Witness leaves & $1{,}355{,}082$\\
+Infeasible leaves & $315{,}498$\\
+Maximum depth & $81$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The certificate consists of one byte per node.  Its SHA-256 digest is
+\begin{center}
+\small\ttfamily
+49ee8134ccf636224432d235fc3c1db2f8d6a567efe9e4c08b2e81639172cfeb.
+\end{center}
+
+The repository provides three checkers:
+\begin{enumerate}[leftmargin=2em]
+  \item a fast C++ checker using bounded wide integers and the same arithmetic
+    header as the generator;
+  \item a separately implemented C++ checker using arbitrary-precision integers;
+  \item a separately implemented Python checker using arbitrary-precision integers.
+\end{enumerate}
+The generator and its search heuristics are not part of the trusted proof core:
+each checker reads the certificate as untrusted input and recomputes every leaf
+claim.  The two arbitrary-precision checkers do not reuse the generator's
+arithmetic routines, and so do not rely on a fixed-width overflow analysis.
+From the repository root, the command
+\begin{center}
+\ttfamily bash ./verify\_all.sh
+\end{center}
+regenerates the deterministic certificate, checks its hash, and executes the
+three verifiers.  The proof package is available at
+\url{https://github.com/Mira-acc/17squares}.
+
+\section{Discussion}
+
+This result is a small numerical improvement, but a complete theorem.  The
+mathematical proof has two layers: the short unavoidable-point argument in
+Section~2 and an exact finite certificate for its universal geometric premise.
+The point search and the certificate-generation heuristic may be useful for
+finding the proof, but neither must be trusted to verify it.
+
+The current gap remains substantial:
+\[
+  4.450837 < s(17) \le 4.67553009360455\ldots.
+\]
+The certificate does not imply that the sixteen-point set is optimal, nor does
+it provide evidence that Bidwell's construction is globally optimal.  Natural
+next steps are external reproduction, formal verification of the small trusted
+kernel, optimization of unavoidable point sets, and
+construction searches informed by the least-covered poses.
+
+\paragraph{Disclosure.}
+The computation and initial exposition were developed with assistance from
+OpenAI's GPT-5.6 Pro under human direction.  The model is not listed as an
+author.  The mathematical claim rests on the explicit point set, certificate,
+and executable exact checkers.
+
+\paragraph{Status.}
+This is a working preprint.  At the time of writing, the certificate has been
+reproduced with the included exact checkers but has not undergone independent
+peer review.
+
+\begin{thebibliography}{9}
+
+\bibitem{Friedman2009}
+E. Friedman,
+\newblock Packing unit squares in squares: A survey and new results,
+\newblock \emph{Electron. J. Combin.}, Dynamic Survey DS7 (2009),
+  first published 1998.
+\newblock \url{https://doi.org/10.37236/28}.
+
+\bibitem{Stromquist2003}
+W. Stromquist,
+\newblock Packing 10 or 11 unit squares in a square,
+\newblock \emph{Electron. J. Combin.} 10(1) (2003), R8.
+\newblock \url{https://doi.org/10.37236/1701}.
+
+\bibitem{Ellsworth2026}
+D. Ellsworth,
+\newblock Squares in squares,
+\newblock high-precision online packing catalogue, accessed 5 August 2026.
+\newblock \url{https://kingbird.myphotos.cc/packing/squares_in_squares.html}.
+
+\end{thebibliography}
+
+\end{document}
