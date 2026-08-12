@@ -45,17 +45,19 @@ Let $s(n)$ denote the least side length of a square that contains $n$ pairwise
 interior-disjoint unit squares, with arbitrary orientations.  We prove by an
 exact computer-assisted argument that
 \[
-  s(17) > \frac{4\,450\,837}{1\,000\,000}=4.450837.
+  s(17) > \frac{4\,468\,292}{1\,000\,000}=4.468292.
 \]
-The previous lower bound recorded in Friedman's survey was
-$(40\sqrt2+19)/17\approx4.4452083821$.  Our proof gives sixteen rational
-points in the square of side $4.450837$ and certifies that every contained unit
-square, at every orientation, contains one of these points strictly in its
-interior.  The result then follows by the pigeonhole principle.  The universal
-geometric assertion is checked by a $3{,}341{,}159$-node recursive bisection of
-the three-dimensional pose space.  All decisive comparisons are exact integer
-inequalities.  A fast C++ checker and separately implemented arbitrary-precision
-C++ and Python checkers validate the same certificate.
+The previous exact computer-assisted bound was $s(17)>4.456575$.  Our proof
+gives sixteen rational points in the square of side $4.468292$ and certifies
+that every contained unit square, at every orientation, contains one of these
+points strictly in its interior.  Besides direct point witnesses, the
+certificate uses a strict triangle-piercing lemma to cover center regions
+independently of orientation.  The result then follows by the pigeonhole
+principle.  The universal geometric assertion is checked by a
+$122{,}626{,}747$-node recursive bisection of the three-dimensional pose space.
+All decisive comparisons are exact integer inequalities.  A fast C++ checker
+and separately implemented arbitrary-precision C++ and Python checkers validate
+the same certificate.
 \end{abstract}
 
 \section{Introduction}
@@ -80,25 +82,30 @@ attributed there to Trevor Green.  The best known construction is due to John
 Bidwell and has side approximately
 $4.67553009360455$\cite{Friedman2009,Ellsworth2026}.
 
+The first exact certificate in this line proved $s(17)>4.450837$.  Fort then
+optimized the rational point set within the same point-witness architecture and
+proved $s(17)>4.456575$\cite{Fort2026}.  The certificate below changes the point
+set again and adds an orientation-independent triangle witness.
+
 Our result is the following.
 
 \begin{theorem}\label{thm:main}
 No packing of seventeen unit squares exists in $\Q_L$ for
 \[
-  L=\frac{4\,450\,837}{1\,000\,000}.
+  L=\frac{4\,468\,292}{1\,000\,000}.
 \]
 Consequently,
 \[
-  s(17)>4.450837.
+  s(17)>4.468292.
 \]
 \end{theorem}
 
-The improvement over the previously recorded lower bound is approximately
-$0.00562861795$.  The proof uses the unavoidable-point method associated with
+The improvement over the preceding exact bound is $0.011717$.  The proof uses
+the unavoidable-point method associated with
 Stromquist and developed in this setting by Friedman\cite{Friedman2009,Stromquist2003}.
-The new contribution is an explicit rational point set together with an exact,
-independently checkable certificate covering the full continuum of square
-positions and orientations.
+The new contribution is an explicit rational point set, the strict
+triangle-piercing leaf described below, and an exact certificate covering the
+full continuum of square positions and orientations.
 
 \section{Strictly unavoidable points}
 
@@ -129,7 +136,7 @@ Lemma~\ref{lem:pigeonhole}.
 
 For Theorem~\ref{thm:main}, the set $P$ consists of the sixteen rational points
 in Table~\ref{tab:points}.  Every displayed decimal is exact, with denominator
-$10^6$.
+$10^7$.
 
 \begin{table}[t]
 \centering
@@ -141,14 +148,14 @@ $10^6$.
 \toprule
 $i$ & $x_i$ & $y_i$ & $i$ & $x_i$ & $y_i$\\
 \midrule
- 1 & 0.967095 & 0.988674 &  9 & 0.925919 & 2.658468\\
- 2 & 1.584591 & 0.989280 & 10 & 1.494140 & 2.660211\\
- 3 & 2.477806 & 0.929750 & 11 & 2.483891 & 2.663100\\
- 4 & 3.452882 & 0.920541 & 12 & 3.452714 & 2.667020\\
- 5 & 0.998081 & 1.794317 & 13 & 0.998038 & 3.524908\\
- 6 & 1.992852 & 1.799448 & 14 & 1.963307 & 3.513845\\
- 7 & 2.973306 & 1.794450 & 15 & 2.850741 & 3.459296\\
- 8 & 3.522479 & 1.795033 & 16 & 3.456188 & 3.456188\\
+ 1 & 0.9633740 & 0.9849850 &  9 & 0.9172158 & 2.6508741\\
+ 2 & 1.6317845 & 0.9829523 & 10 & 1.4694893 & 2.6410332\\
+ 3 & 2.5287879 & 0.9446006 & 11 & 2.4689011 & 2.6753176\\
+ 4 & 3.4682923 & 0.9443212 & 12 & 3.4682923 & 2.7101964\\
+ 5 & 0.9999997 & 1.7580956 & 13 & 0.9999997 & 3.5239708\\
+ 6 & 1.9993909 & 1.7929744 & 14 & 1.9395041 & 3.5236914\\
+ 7 & 2.9988027 & 1.8272588 & 15 & 2.8365087 & 3.4853407\\
+ 8 & 3.5451063 & 1.8219620 & 16 & 3.4687946 & 3.4687946\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -156,29 +163,50 @@ $i$ & $x_i$ & $y_i$ & $i$ & $x_i$ & $y_i$\\
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[x=1.25cm,y=1.25cm]
-  \draw[line width=0.7pt] (0,0) rectangle (4.450837,4.450837);
+  \draw[line width=0.7pt] (0,0) rectangle (4.468292,4.468292);
   \foreach \g in {1,2,3,4} {
-    \draw[gray!25,thin] (\g,0) -- (\g,4.450837);
-    \draw[gray!25,thin] (0,\g) -- (4.450837,\g);
+    \draw[gray!25,thin] (\g,0) -- (\g,4.468292);
+    \draw[gray!25,thin] (0,\g) -- (4.468292,\g);
   }
+  \coordinate (p1) at (0.9633740,0.9849850);
+  \coordinate (p2) at (1.6317845,0.9829523);
+  \coordinate (p3) at (2.5287879,0.9446006);
+  \coordinate (p4) at (3.4682923,0.9443212);
+  \coordinate (p5) at (0.9999997,1.7580956);
+  \coordinate (p6) at (1.9993909,1.7929744);
+  \coordinate (p7) at (2.9988027,1.8272588);
+  \coordinate (p8) at (3.5451063,1.8219620);
+  \coordinate (p9) at (0.9172158,2.6508741);
+  \coordinate (p10) at (1.4694893,2.6410332);
+  \coordinate (p11) at (2.4689011,2.6753176);
+  \coordinate (p12) at (3.4682923,2.7101964);
+  \coordinate (p13) at (0.9999997,3.5239708);
+  \coordinate (p14) at (1.9395041,3.5236914);
+  \coordinate (p15) at (2.8365087,3.4853407);
+  \coordinate (p16) at (3.4687946,3.4687946);
+  \foreach \a/\b/\c in {
+    1/2/5,2/3/6,2/5/6,3/4/7,3/6/7,4/7/8,
+    5/6/10,5/9/10,6/7/11,6/10/11,7/8/12,7/11/12,
+    9/10/13,10/11/14,10/13/14,11/12/15,11/14/15,12/15/16}
+    \draw[blue!30,thin] (p\a) -- (p\b) -- (p\c) -- cycle;
   \foreach \x/\y/\n in {
-    0.967095/0.988674/1,1.584591/0.989280/2,
-    2.477806/0.929750/3,3.452882/0.920541/4,
-    0.998081/1.794317/5,1.992852/1.799448/6,
-    2.973306/1.794450/7,3.522479/1.795033/8,
-    0.925919/2.658468/9,1.494140/2.660211/10,
-    2.483891/2.663100/11,3.452714/2.667020/12,
-    0.998038/3.524908/13,1.963307/3.513845/14,
-    2.850741/3.459296/15,3.456188/3.456188/16}
+    0.9633740/0.9849850/1,1.6317845/0.9829523/2,
+    2.5287879/0.9446006/3,3.4682923/0.9443212/4,
+    0.9999997/1.7580956/5,1.9993909/1.7929744/6,
+    2.9988027/1.8272588/7,3.5451063/1.8219620/8,
+    0.9172158/2.6508741/9,1.4694893/2.6410332/10,
+    2.4689011/2.6753176/11,3.4682923/2.7101964/12,
+    0.9999997/3.5239708/13,1.9395041/3.5236914/14,
+    2.8365087/3.4853407/15,3.4687946/3.4687946/16}
   {
     \fill (\x,\y) circle[radius=1.35pt];
     \node[font=\scriptsize,anchor=south west,inner sep=1.2pt] at (\x,\y) {\n};
   }
-  \node[font=\small,anchor=north] at (2.2254185,-0.12) {$L=4.450837$};
+  \node[font=\small,anchor=north] at (2.234146,-0.12) {$L=4.468292$};
 \end{tikzpicture}
-\caption{The witness set in the containing square.  The arrangement is close
-to a distorted $4\times4$ grid, but the proof uses the exact rational
-coordinates in Table~\ref{tab:points}.}
+\caption{The witness set and the eighteen certified triangles.  The proof uses
+the exact rational coordinates in Table~\ref{tab:points}; blue edges indicate
+the orientation-independent triangle witnesses.}
 \label{fig:points}
 \end{figure}
 
@@ -239,6 +267,7 @@ Byte & Meaning\\
 $0$ & the current box contains no feasible square pose;\\
 $1,\dots,16$ & the indicated point lies strictly inside every pose in the box;\\
 $17,18,19$ & bisect the box in $x$, $y$, or $t$, respectively.\\
+$20,\dots,37$ & the indicated triangle pierces every pose in the box.\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -264,7 +293,7 @@ Since $h(t)\ge h(u)$ throughout the box, the box is infeasible if any one of
 holds.  The checker clears denominators and squares nonnegative quantities, so
 this test is performed using integers only.
 
-\subsection{Witness leaves}
+\subsection{Point-witness leaves}
 
 Fix a witness point $p$.  Exact interval arithmetic over $\mathcal B$ gives
 intervals containing
@@ -286,6 +315,45 @@ The interval enclosure for the bilinear term $t\Delta y$ is obtained by taking
 the minimum and maximum of its four corner products; the same is done for
 $(-t)\Delta x$.  No floating-point approximation enters a leaf decision.
 
+\subsection{Triangle-witness leaves}
+
+Some center boxes can be closed without subdividing the orientation interval.
+The certificate fixes eighteen triangles whose vertices belong to the witness
+set and applies the following lemma.
+
+\begin{lemma}[Strict triangle piercing]\label{lem:triangle}
+Let $A,B,C$ be three points whose pairwise distances are strictly less than
+one.  Every unit square whose center lies strictly inside triangle $ABC$
+contains at least one of $A,B,C$ strictly in its interior.
+\end{lemma}
+
+\begin{proof}
+Translate the square center to the origin and rotate the plane so the square is
+$[-1/2,1/2]^2$.  Its diagonals divide the plane into right, top, left, and
+bottom closed cones.  Because the origin lies strictly inside triangle $ABC$,
+the three vertices cannot all lie in a closed half-plane bounded by either
+diagonal.  Among the four cones this forces two vertices into opposite cones.
+If neither vertex were in
+the square interior, vertices in the right and left cones would have
+$x$-coordinates differing by at least one; vertices in the top and bottom
+cones would have $y$-coordinates differing by at least one.  In either case
+their Euclidean distance would be at least one, contradicting the strict
+side-length hypothesis.
+\end{proof}
+
+For a triangle leaf, the checker first verifies the three strict inequalities
+\[
+  \lVert A-B\rVert_2^2<1,\qquad
+  \lVert B-C\rVert_2^2<1,\qquad
+  \lVert C-A\rVert_2^2<1.
+\]
+It orients the triangle counterclockwise and checks that all four corners of
+the center rectangle lie strictly to the left of each directed edge.  Each
+edge test is affine in the center coordinates, so positivity at the four
+corners proves positivity throughout the rectangle.  Lemma~\ref{lem:triangle}
+then covers every orientation in the box.  The checker clears denominators and
+performs these tests with integers only.
+
 \subsection{Completeness of the tree}
 
 The checker traverses the tree from $\mathcal B_0$, applying every split exactly.
@@ -295,8 +363,10 @@ trailing byte.  Finally it checks the full-binary-tree identity
   \#\text{leaves}=\#\text{split nodes}+1.
 \]
 It follows inductively that the accepted leaves form a cover of the complete
-root box.  Every feasible pose is therefore covered by a witness leaf, proving
-that the sixteen points are strictly unavoidable.
+root box.  Every feasible pose is therefore covered by either a point-witness
+leaf or a triangle-witness leaf.  In both cases at least one of the sixteen
+points lies strictly inside the square, so the point set is strictly
+unavoidable.
 
 Lemma~\ref{lem:pigeonhole} now rules out a packing in $\Q_L$, and therefore in
 every smaller container as well.  Thus $s(17)\ge L$.  The minimum defining
@@ -307,25 +377,33 @@ $\Q_L$.  Hence $s(17)>L$, proving Theorem~\ref{thm:main}.
 
 The certificate uses the scales
 \[
-  S_t=2^{40},\qquad S_x=10^6\,2^{40}.
+  S_t=2^{40},\qquad S_x=10^6\,2^{40},\qquad D_p=10^7.
 \]
 The center and slope endpoints are stored as integers on these fixed rational
-grids, while the witness points have denominator $10^6$.  The accepted tree has
+grids, while the witness points have denominator $D_p$.  The accepted tree has
 \begin{center}
 \begin{tabular}{lr}
 \toprule
-Total nodes & $3{,}341{,}159$\\
-Split nodes & $1{,}670{,}579$\\
-Witness leaves & $1{,}355{,}082$\\
-Infeasible leaves & $315{,}498$\\
-Maximum depth & $81$\\
+Total nodes & $122{,}626{,}747$\\
+Split nodes & $61{,}313{,}373$\\
+Point-witness leaves & $33{,}762{,}069$\\
+Triangle-witness leaves & $483{,}875$\\
+Infeasible leaves & $27{,}067{,}430$\\
+Maximum depth & $74$\\
 \bottomrule
 \end{tabular}
 \end{center}
-The certificate consists of one byte per node.  Its SHA-256 digest is
+The certificate consists of one byte per node.  Its raw SHA-256 digest is
 \begin{center}
 \small\ttfamily
-49ee8134ccf636224432d235fc3c1db2f8d6a567efe9e4c08b2e81639172cfeb.
+2838f315302d67da131745925e9ec7dd2a602bb299d1335ce25e4e13a7b7b6d2.
+\end{center}
+The raw tree is $122{,}626{,}747$ bytes, above GitHub's ordinary per-file
+limit.  The repository stores a deterministic $374{,}096$-byte XZ archive with
+SHA-256
+\begin{center}
+\small\ttfamily
+a349b81e630ccf7292ae0afe6ed954591f7e88fe6289847f67883204a7ed60ac.
 \end{center}
 
 The repository provides three checkers:
@@ -343,21 +421,24 @@ From the repository root, the command
 \begin{center}
 \ttfamily bash ./verify\_all.sh
 \end{center}
-regenerates the deterministic certificate, checks its hash, and executes the
-three verifiers.  The proof package is available at
+regenerates the deterministic certificate, checks its hash, compares it
+byte-for-byte with the archive, and executes the three verifiers.  The proof
+package is available at
 \url{https://github.com/Mira-acc/17squares}.
 
 \section{Discussion}
 
-This result is a small numerical improvement, but a complete theorem.  The
-mathematical proof has two layers: the short unavoidable-point argument in
-Section~2 and an exact finite certificate for its universal geometric premise.
-The point search and the certificate-generation heuristic may be useful for
-finding the proof, but neither must be trusted to verify it.
+This result is a numerical improvement and a modest extension of the
+certificate language.  The mathematical proof has two layers: the short
+unavoidable-point argument in Section~2 and an exact finite certificate for its
+universal geometric premise.  Triangle leaves account for $483{,}875$ pose
+boxes and discharge their complete orientation intervals at once.  The point
+search and the certificate-generation heuristic may be useful for finding the
+proof, but neither must be trusted to verify it.
 
 The current gap remains substantial:
 \[
-  4.450837 < s(17) \le 4.67553009360455\ldots.
+  4.468292 < s(17) \le 4.67553009360455\ldots.
 \]
 The certificate does not imply that the sixteen-point set is optimal, nor does
 it provide evidence that Bidwell's construction is globally optimal.  Natural
@@ -396,6 +477,12 @@ D. Ellsworth,
 \newblock Squares in squares,
 \newblock high-precision online packing catalogue, accessed 5 August 2026.
 \newblock \url{https://kingbird.myphotos.cc/packing/squares_in_squares.html}.
+
+\bibitem{Fort2026}
+S. Fort,
+\newblock Packing 17 unit squares: exact lower bound $s(17)>4.456575$,
+\newblock computer-assisted certificate repository (2026).
+\newblock \url{https://github.com/stanislavfort/17squares}.
 
 \end{thebibliography}
 

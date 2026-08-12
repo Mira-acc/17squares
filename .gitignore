@@ -13,3 +13,5 @@ generate_certificate
 paper/main.pdf
 paper/main.out
 *.cert.new
+*.cert
+!*.cert.xz

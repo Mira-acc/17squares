@@ -5,24 +5,27 @@ interior-disjoint unit squares, with arbitrary orientations. This repository
 contains an exact computer-assisted proof that
 
 \[
-\boxed{s(17)>4.450837}.
+\boxed{s(17)>4.468292}.
 \]
 
-The previous lower bound recorded in Friedman's survey was
-`(40√2 + 19)/17 ≈ 4.4452083821`.
+The previous exact computer-assisted bound was `s(17) > 4.456575`, proved in
+[Stanislav Fort's certificate repository](https://github.com/stanislavfort/17squares).
 
 ## Read the proof
 
 - [Paper (PDF)](paper/17squares-lower-bound.pdf)
 - [LaTeX source](paper/main.tex)
-- [Exact certificate package](certificates/lower_bound_4p450837)
+- [Exact certificate package](certificates/lower_bound_4p468292)
+- [Proof interface and triangle lemma](certificates/lower_bound_4p468292/PROOF.md)
 
 The proof supplies sixteen rational points in the square of side
-`4450837/1000000`. An exact subdivision certificate proves that every contained
-unit square, at every orientation, contains one of those points strictly in its
-interior. Seventeen interior-disjoint squares would require seventeen distinct
-points, so no such packing exists at that side length. Compactness makes the
-resulting lower bound strict.
+`4468292/1000000`. A 122,626,747-node exact subdivision certificate proves that
+every contained unit square, at every orientation, contains one of those points
+strictly in its interior. In addition to direct point witnesses, the certificate
+uses a strict triangle-piercing lemma to cover some regions independently of
+orientation. Seventeen interior-disjoint squares would require seventeen
+distinct points, so no such packing exists at that side length. Compactness
+makes the resulting lower bound strict.
 
 ## Verify the certificate
 
@@ -31,33 +34,39 @@ Requirements:
 - Python 3
 - a C++17 compiler
 - Boost headers
+- `xz` and `sha256sum`
 
-Run:
+Run the full deterministic reproduction:
 
 ```bash
 bash ./verify_all.sh
 ```
 
-The script regenerates the certificate, checks that its SHA-256 hash is
+This regenerates all 122,626,747 certificate bytes, checks the raw SHA-256,
+compares the result byte-for-byte with the archived XZ stream, and validates the
+tree with three exact checkers. The raw certificate is larger than GitHub's
+ordinary per-file limit, so the repository stores its deterministic 374,096-byte
+XZ archive.
 
-```text
-49ee8134ccf636224432d235fc3c1db2f8d6a567efe9e4c08b2e81639172cfeb
+For the faster audit that checks the archive without regenerating the tree, run:
+
+```bash
+bash certificates/lower_bound_4p468292/verify_archived.sh
 ```
 
-compares it byte-for-byte with the archived tree, and validates it with three
-exact checkers. See [VERIFY.md](VERIFY.md) for the proof interface and trust
-boundary.
+See [VERIFY.md](VERIFY.md) for hashes, expected output, and the trust boundary.
 
 ## Repository contents
 
 ```text
 paper/                                  paper source and rendered PDF
-certificates/lower_bound_4p450837/      points, certificate, generator, checkers
-verify_all.sh                           one-command exact reproduction
+certificates/lower_bound_4p468292/      points, triangles, archive, generator, checkers
+verify_all.sh                           full deterministic reproduction
 ```
 
 Search experiments and weaker historical certificates are intentionally omitted
-from this publication repository.
+from this publication repository. There is no hosted CI; verification is an
+explicit local command.
 
 ## Status
 
