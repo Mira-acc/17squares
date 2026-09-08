@@ -1,0 +1,38 @@
+name: Verify weighted 17-square lower bound
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'certificates/lower_bound_4p607/**'
+      - '.github/workflows/verify-weighted-cover.yml'
+  pull_request:
+    paths:
+      - 'certificates/lower_bound_4p607/**'
+      - '.github/workflows/verify-weighted-cover.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  exact-replay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Install exact replay dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ libboost-dev python3
+      - name: Refuse a lower displayed frontier
+        run: |
+          python3 - <<'PYCODE'
+          import json
+          from fractions import Fraction
+          from pathlib import Path
+          result = json.loads(Path('certificates/lower_bound_4p607/result.json').read_text())
+          if Fraction(result['strict_decimal_bound']) < Fraction('4.607028598640'):
+              raise SystemExit('Lower-bound frontier regression refused')
+          PYCODE
+      - name: Replay exact geometry and both accumulation engines
+        run: python3 certificates/lower_bound_4p607/verify.py --direct

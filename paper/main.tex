@@ -28,7 +28,7 @@
 
 \title{An Exact Computer-Assisted Lower Bound for\\Packing 17 Unit Squares in a Square}
 \author{Mira\\\small \url{https://github.com/Mira-acc/17squares}}
-\date{August 2026}
+\date{September 2026}
 
 \hypersetup{
   pdftitle={An Exact Computer-Assisted Lower Bound for Packing 17 Unit Squares in a Square},
@@ -39,73 +39,216 @@
 
 \begin{document}
 \maketitle
-
 \begin{abstract}
-Let $s(n)$ denote the least side length of a square that contains $n$ pairwise
-interior-disjoint unit squares, with arbitrary orientations.  We prove by an
-exact computer-assisted argument that
-\[
-  s(17) > \frac{4\,468\,292}{1\,000\,000}=4.468292.
-\]
-The previous exact computer-assisted bound was $s(17)>4.456575$.  Our proof
-gives sixteen rational points in the square of side $4.468292$ and certifies
-that every contained unit square, at every orientation, contains one of these
-points strictly in its interior.  Besides direct point witnesses, the
-certificate uses a strict triangle-piercing lemma to cover center regions
-independently of orientation.  The result then follows by the pigeonhole
-principle.  The universal geometric assertion is checked by a
-$122{,}626{,}747$-node recursive bisection of the three-dimensional pose space.
-All decisive comparisons are exact integer inequalities.  A fast C++ checker
-and separately implemented arbitrary-precision C++ and Python checkers validate
-the same certificate.
+Let $s(17)$ be the least side length of a square containing seventeen pairwise
+interior-disjoint unit squares, with arbitrary orientations. We give an exact
+computer-assisted certificate proving $s(17)>4.607028598640$. A nonnegative
+rational measure on 1,200 points has total mass $16.98264408<17$, yet assigns
+mass at least one to the interior of every contained unit square. An exact
+sweep verifies all translations of smaller closed cores at 2,881 directions;
+a strict containment inequality covers the intervening orientations. Rational
+scaling gives a slightly larger radical lower bound with a weak inequality.
+The two accumulation engines share one geometric kernel. The earlier
+sixteen-point proof of $s(17)>4.468292$ is retained in an appendix.
 \end{abstract}
 
-\section{Introduction}
-
-For $L>0$, write
-\[
-  \Q_L=[0,L]^2.
-\]
-Let $s(n)$ be the minimum $L$ for which $n$ pairwise interior-disjoint unit
-squares can be placed in $\Q_L$, with arbitrary translations and rotations.
-The minimum is attained by the standard compactness argument: centers and
-orientations range over a compact parameter space, and the containment and
-nonoverlap constraints are closed.  This classical packing problem has a long
-history; Friedman's dynamic survey
-collects the principal constructions and lower-bound methods\cite{Friedman2009}.
-For $n=17$, the survey records the lower bound
-\[
-  s(17)\ge \frac{40\sqrt2+19}{17}
-  =4.445208382054341\ldots,
-\]
-attributed there to Trevor Green.  The best known construction is due to John
-Bidwell and has side approximately
-$4.67553009360455$\cite{Friedman2009,Ellsworth2026}.
-
-The first exact certificate in this line proved $s(17)>4.450837$.  Fort then
-optimized the rational point set within the same point-witness architecture and
-proved $s(17)>4.456575$\cite{Fort2026}.  The certificate below changes the point
-set again and adds an orientation-independent triangle witness.
-
-Our result is the following.
-
+\section{Result and provenance}
+Write $\Q_L=[0,L]^2$. Squares in a packing may touch, but their interiors must
+be disjoint. The minimum defining $s(17)$ is attained: centres and orientations
+range over a compact parameter space, and containment and nonoverlap are closed
+conditions.
 \begin{theorem}\label{thm:main}
-No packing of seventeen unit squares exists in $\Q_L$ for
+Let
 \[
-  L=\frac{4\,468\,292}{1\,000\,000}.
+ L=\frac{4607}{1000},\quad B=\frac{19997}{20000},\quad
+ h=\frac{207107}{1440000000}.
 \]
-Consequently,
+Then
 \[
-  s(17)>4.468292.
+ s(17)\ge S_*:=\frac{L\sqrt{1+h^2}}{B(1+h)}
+ =\sqrt{\frac{17604407342714743536607440400}{829429719507765981945905041}}
+ >4.607028598640.
 \]
 \end{theorem}
+The base certificate excludes a packing at side $4.607$. The endpoint
+$S_*=4.607028598640215\ldots$ follows by dilation; exclusion at that endpoint
+is not asserted. The cited upper-bound construction is
+Bidwell's packing, of side about $4.67553009360455$\cite{Friedman2009,Ellsworth2026}.
+Thus the resulting interval is
+\[
+ 4.607028598640<s(17)\le4.67553009360455\ldots.
+\]
+This is a claim about the supplied certificate and cited comparison data,
+not an exhaustive assertion of priority over other work.
 
-The improvement over the preceding exact bound is $0.011717$.  The proof uses
-the unavoidable-point method associated with
-Stromquist and developed in this setting by Friedman\cite{Friedman2009,Stromquist2003}.
-The new contribution is an explicit rational point set, the strict
-triangle-piercing leaf described below, and an exact certificate covering the
-full continuum of square positions and orientations.
+The starting 1,184-atom certificate at side $4.59$ is due to Joshua Levy's
+\emph{squares} project\cite{Levy17}. The weighted covering principle and
+covering linear-program strategy predate this calculation, and the sharp
+dilation lemma used below is credited to Levy's T-022 note\cite{LevyDilation}.
+The contribution here is the stronger rational certificate and its exact
+arithmetic replay. The derived data retain eight symmetry images of Mira's
+earlier point $(1.494140,2.660211)$, scaled from side $4.450837$ to $4.607$.
+Their total weight is $0.03438968$. Removing that orbit reduces the
+axis-aligned core minimum to $0.99140418$, invalidating this certificate;
+this does not preclude reoptimization without the orbit.
+
+\section{Weighted interior coverage}
+Let $\mu=\sum_j w_j\delta_{p_j}$, where $p_j\in\Q_L$ and $w_j\ge0$ are rational.
+If $\mu(\Q_L)<17$ and $\mu(\interior U)\ge1$ for every contained unit square
+$U$, then seventeen interior-disjoint such squares would have total interior
+mass at least 17 and at most $\mu(\Q_L)$, a contradiction. Sixteen unavoidable
+points, each of weight one, are the historical special case in the appendix.
+
+The new certificate is invariant under the eight symmetries $D_4$ of $\Q_L$.
+This restricts the measure, not a hypothetical packing. Set
+\[
+ T=\frac{207107}{500000},\quad m=2880,\quad
+ t_k=\frac{kT}{m},\quad\theta_k=2\arctan t_k\quad(0\le k\le m).
+\]
+The checker verifies nonnegative weights, atom containment, $D_4$ invariance,
+total mass below 17, and
+\begin{equation}\label{eq:angular}
+ T^2+2T\ge1,\qquad B^2(1+h)^2<1+h^2,\qquad h=T/m<1.
+\end{equation}
+It then checks that every closed side-$B$ square contained in $\Q_L$ at each
+$\theta_k$ has mass at least one.
+
+Container symmetries and square symmetries reduce any individual orientation
+to $[0,\pi/4]$. The first inequality in \eqref{eq:angular} ensures that the
+net reaches this interval's upper endpoint. For the nearest net angle, the
+angular distance $\delta$ satisfies
+\[
+ \tan\delta\le\frac{t_{k+1}-t_k}{1+t_kt_{k+1}}\le h.
+\]
+For $0\le z\le h<1$ the identity
+\[
+ (1+h)^2(1+z^2)-(1+z)^2(1+h^2)=2(h-z)(1-hz)\ge0
+\]
+gives $\cos\delta+\sin\delta\le(1+h)/\sqrt{1+h^2}$. Therefore a concentric
+closed side-$B$ core at the chosen net angle has projections strictly smaller
+than one on both axes of the unit square. It lies strictly inside that square,
+and hence inside the container. Its mass is at least one by the finite check.
+Atoms on a core boundary are still strictly inside the parent unit square,
+so touching unit squares cannot double-count them.
+
+\section{Checking every translation exactly}
+Centre the container at the origin. At a net angle let $c=\cos\theta>0$ and
+$s=\sin\theta\ge0$. The admissible core centres form $[-H,H]^2$, where
+$H=(L-B(c+s))/2$. The checker requires $H>0$ at every direction.
+In rotated coordinates $u=cx+sy$, $v=-sx+cy$, the centre domain is
+\[
+ D=\{(u,v):|cu-sv|\le H,\ |su+cv|\le H\}.
+\]
+An atom contributes its weight on a closed axis-parallel rectangle of side
+$B$ centred at its rotated coordinates. Rectangle edges and the extreme
+$u$ coordinates of $D$ partition the plane into open cells of constant mass.
+
+For each open $u$ slab $(a,b)$ intersecting the interior of $D$, the projection
+of that intersection on the $v$ axis is an open interval $(v_{\min},v_{\max})$.
+When $s>0$, the lower and upper boundaries of $D$ are
+\[
+ \ell(u)=\max\left\{\frac{cu-H}{s},\frac{-H-su}{c}\right\},\quad
+ r(u)=\min\left\{\frac{cu+H}{s},\frac{H-su}{c}\right\}.
+\]
+Their minimum and maximum occur at $u=H(c-s)$ and $u=-H(c-s)$, respectively,
+clamped to $[a,b]$. These evaluations give $v_{\min}$ and $v_{\max}$;
+for $s=0$ they are $-H,H$. A $v$ cell is reachable exactly when its open
+interval overlaps $(v_{\min},v_{\max})$. A range-minimum sweep checks its mass.
+
+Boundary placements also have mass at least one. Each is a limit of interior
+placements avoiding all event lines. There are finitely many cells, so a
+subsequence lies in one fixed cell. Each atom captured there remains captured
+at the limit because core membership is closed. Nonnegative weights imply
+that mass cannot decrease at this boundary. This covers wall contacts,
+coincident events and vertices, completing the translation argument.
+
+\subsection{Integer representation and trust boundary}
+For a reduced half-tangent $p/q$ put
+\[
+ C=q^2-p^2,\quad S=2pq,\quad R=q^2+p^2,
+ \qquad c=C/R,\quad s=S/R.
+\]
+Choose an integer scale $G$ making centred atom coordinates $X_j,Y_j$,
+$\ell_0=GL/2$ and $b_0=GB/2$ integral. In units $1/(R^2G)$ the projected
+atom coordinates and rectangle half-width are
+\[
+ U_j=R(CX_j+SY_j),\quad V_j=R(-SX_j+CY_j),\quad J=b_0R^2.
+\]
+With $H_0=\ell_0R-b_0(C+S)$, the domain inequalities are
+$|CU-SV|\le R^2H_0$ and $|SU+CV|\le R^2H_0$.
+All geometry and rational comparisons use unbounded Boost integers.
+Weights use a common denominator; the checker caps the summed integer
+numerators at $10^{12}$ to protect signed 64-bit accumulation.
+
+A segment tree and a direct difference-array/prefix-sum engine evaluate the
+same geometric cells. Their complete logs must agree. This audits two
+implementations of accumulation, not two independently authored geometric
+proofs. The JSON input compiler preserves rationals exactly. The numerical
+optimizer and its sampled constraints are outside the trusted proof core.
+
+\section{Dilation and reproducibility}
+Put $C_0=\sqrt{1+h^2}/(B(1+h))>1$. For every rational $0<r<C_0$, scale the
+container, cores and atom coordinates by $r$, leaving weights unchanged.
+Inverse scaling preserves core coverage and the scaled cores still satisfy
+the strict angular inequality. The weighted contradiction excludes a packing
+at side $rL$. Taking rational $r$ increasing to $C_0$ proves $s(17)\ge S_*$.
+The exact rational comparison $(4.607028598640)^2<S_*^2$ proves the strict
+decimal statement in Theorem~\ref{thm:main}. At $C_0$ the containment inequality
+becomes equality, which is why the endpoint statement remains weak.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Certificate quantity & Exact value\\
+\midrule
+Atoms & 1,200\\
+Directions & 2,881\\
+Total mass & $212283051/12500000=16.98264408$\\
+Minimum closed-core mass & $25000029/25000000=1.00000116$\\
+Centre slabs & 6,679,269\\
+\bottomrule
+\end{tabular}
+\end{center}
+The authoritative atoms are in
+\path{certificates/lower_bound_4p607/best-certificate.json}, with SHA-256
+\begin{center}\small\ttfamily
+8d824dedaa00d6f49fb13198e2fcbfd2a9781e4847a39411cf178555ca4ebe3d.
+\end{center}
+From the repository root, run
+\begin{quote}\ttfamily\small
+python3 certificates/lower\_bound\_4p607/verify.py --direct
+\end{quote}
+This rebuilds both engines, runs thirteen positive/refusal controls per engine,
+replays the pinned Levy source and new certificate, compares logs, and checks
+the result ledger and endpoint. Python's standard library, C++17 and Boost
+headers suffice. The command \texttt{bash ./verify\_all.sh} additionally
+regenerates and checks the historical triangle-witness certificate.
+The weighted package has its own SHA-256 manifest; the historical package
+retains its original raw and compressed certificate hashes.
+
+\paragraph{Attribution and status.}
+Levy's original and the derived certificate data are credited under CC BY 4.0;
+source hashes and changes are recorded in the package's \path{ATTRIBUTION.md}.
+This is a computer-assisted working preprint, with external peer review pending.
+The earlier computation and exposition were developed with assistance from
+OpenAI's GPT-5.6 Pro under human direction; the September patch and this
+integration also used AI assistance. The claim rests on the explicit data,
+mathematical reduction and executable checker. No optimality of the measure
+or the cited upper bound is asserted.
+
+\appendix
+\section{Historical triangle-witness theorem}
+The August certificate proves the following earlier result. Throughout this
+appendix, $L=4468292/1000000=4.468292$.
+\begin{theorem}\label{thm:historical}
+No packing of seventeen unit squares exists in $\Q_L$. Consequently,
+$s(17)>4.468292$.
+\end{theorem}
+The preceding exact point-witness bound was $s(17)>4.456575$, due to
+Fort\cite{Fort2026}. This certificate improves it by $0.011717$ and adds
+orientation-independent triangle witnesses to the subdivision language.
+The historical data and three checkers remain in
+\path{certificates/lower_bound_4p468292/}.
 
 \section{Strictly unavoidable points}
 
@@ -134,7 +277,7 @@ The use of interiors is important.  Boundary witnesses could be shared by
 several touching squares and would not imply the injection in
 Lemma~\ref{lem:pigeonhole}.
 
-For Theorem~\ref{thm:main}, the set $P$ consists of the sixteen rational points
+For Theorem~\ref{thm:historical}, the set $P$ consists of the sixteen rational points
 in Table~\ref{tab:points}.  Every displayed decimal is exact, with denominator
 $10^7$.
 
@@ -371,7 +514,7 @@ unavoidable.
 Lemma~\ref{lem:pigeonhole} now rules out a packing in $\Q_L$, and therefore in
 every smaller container as well.  Thus $s(17)\ge L$.  The minimum defining
 $s(17)$ is attained by compactness, so equality would give a packing in
-$\Q_L$.  Hence $s(17)>L$, proving Theorem~\ref{thm:main}.
+$\Q_L$.  Hence $s(17)>L$, proving Theorem~\ref{thm:historical}.
 
 \section{Exact arithmetic and reproducibility}
 
@@ -421,41 +564,11 @@ From the repository root, the command
 \begin{center}
 \ttfamily bash ./verify\_all.sh
 \end{center}
-regenerates the deterministic certificate, checks its hash, compares it
-byte-for-byte with the archive, and executes the three verifiers.  The proof
+replays the weighted certificate and regenerates the historical certificate,
+checks its hash, compares it byte-for-byte with the archive, and executes the
+three historical verifiers.  The proof
 package is available at
 \url{https://github.com/Mira-acc/17squares}.
-
-\section{Discussion}
-
-This result is a numerical improvement and a modest extension of the
-certificate language.  The mathematical proof has two layers: the short
-unavoidable-point argument in Section~2 and an exact finite certificate for its
-universal geometric premise.  Triangle leaves account for $483{,}875$ pose
-boxes and discharge their complete orientation intervals at once.  The point
-search and the certificate-generation heuristic may be useful for finding the
-proof, but neither must be trusted to verify it.
-
-The current gap remains substantial:
-\[
-  4.468292 < s(17) \le 4.67553009360455\ldots.
-\]
-The certificate does not imply that the sixteen-point set is optimal, nor does
-it provide evidence that Bidwell's construction is globally optimal.  Natural
-next steps are external reproduction, formal verification of the small trusted
-kernel, optimization of unavoidable point sets, and
-construction searches informed by the least-covered poses.
-
-\paragraph{Disclosure.}
-The computation and initial exposition were developed with assistance from
-OpenAI's GPT-5.6 Pro under human direction.  The model is not listed as an
-author.  The mathematical claim rests on the explicit point set, certificate,
-and executable exact checkers.
-
-\paragraph{Status.}
-This is a working preprint.  At the time of writing, the certificate has been
-reproduced with the included exact checkers but has not undergone independent
-peer review.
 
 \begin{thebibliography}{9}
 
@@ -478,6 +591,17 @@ D. Ellsworth,
 \newblock high-precision online packing catalogue, accessed 5 August 2026.
 \newblock \url{https://kingbird.myphotos.cc/packing/squares_in_squares.html}.
 
+\bibitem{Levy17}
+J. Levy, the squares project,
+\newblock Rational weighted certificate for seventeen squares.
+\newblock Source data retained with Git blob
+\texttt{f454e44dee1f2318af45e02efdfff5fcd7dbfbe1}.
+\newblock \url{https://github.com/jlevy/squares/tree/main/packing/cases/n17_fractional_certificate}.
+
+\bibitem{LevyDilation}
+J. Levy, the squares project,
+\newblock T-022: Dilation-limit proof for the eleven-square certificate.
+\newblock \url{https://github.com/jlevy/squares/blob/main/packing/cases/n11_fractional_certificate/t-022-dilation-limit-proof.md}.
 \bibitem{Fort2026}
 S. Fort,
 \newblock Packing 17 unit squares: exact lower bound $s(17)>4.456575$,

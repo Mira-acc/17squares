@@ -1,0 +1,46 @@
+{
+  "source-tree": {
+    "certificate_sha256": "461cb731917bdaf7a58f54be651ca2c782bc519790d79d0fe4941c24fdd4c652",
+    "outer_side": "459/100",
+    "total_mass": "423327/25000",
+    "minimum_mass": "200009/200000",
+    "atoms": 1184,
+    "directions": 181,
+    "slabs": 414321,
+    "weak_endpoint_squared": "17065251368053280247690000/809993351783841654158521",
+    "log_sha256": "96008d39dcf7e3e73def7a58d4ea60392a28c62ae9f442c20d49b2becb6fa4e8"
+  },
+  "best-tree": {
+    "certificate_sha256": "8d824dedaa00d6f49fb13198e2fcbfd2a9781e4847a39411cf178555ca4ebe3d",
+    "outer_side": "4607/1000",
+    "total_mass": "212283051/12500000",
+    "minimum_mass": "25000029/25000000",
+    "atoms": 1200,
+    "directions": 2881,
+    "slabs": 6679269,
+    "weak_endpoint_squared": "17604407342714743536607440400/829429719507765981945905041",
+    "log_sha256": "ad49ab3bdacfc5f223d5987b9b5a637fc58ce9c347588aa009c26f807b42cebd"
+  },
+  "source-direct": {
+    "certificate_sha256": "461cb731917bdaf7a58f54be651ca2c782bc519790d79d0fe4941c24fdd4c652",
+    "outer_side": "459/100",
+    "total_mass": "423327/25000",
+    "minimum_mass": "200009/200000",
+    "atoms": 1184,
+    "directions": 181,
+    "slabs": 414321,
+    "weak_endpoint_squared": "17065251368053280247690000/809993351783841654158521",
+    "log_sha256": "96008d39dcf7e3e73def7a58d4ea60392a28c62ae9f442c20d49b2becb6fa4e8"
+  },
+  "best-direct": {
+    "certificate_sha256": "8d824dedaa00d6f49fb13198e2fcbfd2a9781e4847a39411cf178555ca4ebe3d",
+    "outer_side": "4607/1000",
+    "total_mass": "212283051/12500000",
+    "minimum_mass": "25000029/25000000",
+    "atoms": 1200,
+    "directions": 2881,
+    "slabs": 6679269,
+    "weak_endpoint_squared": "17604407342714743536607440400/829429719507765981945905041",
+    "log_sha256": "ad49ab3bdacfc5f223d5987b9b5a637fc58ce9c347588aa009c26f807b42cebd"
+  }
+}

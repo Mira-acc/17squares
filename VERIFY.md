@@ -1,6 +1,50 @@
 # Verification guide
 
-## The checked statement
+Run all current and historical checks from the repository root:
+
+```bash
+bash ./verify_all.sh
+```
+
+This first replays both weighted accumulation engines, then fully regenerates
+and checks the historical 122,626,747-node certificate. The historical Python
+check is substantially slower than weighted replay alone. Final success is
+`ALL_RETAINED_CHECKS_PASSED`.
+
+## Current weighted theorem
+
+The weighted package proves `s(17) > 4.607028598640`. Its exact radical endpoint
+is a weak lower bound:
+
+```text
+s(17) >= sqrt(17604407342714743536607440400 / 829429719507765981945905041).
+```
+
+Replay just this package with:
+
+```bash
+python3 certificates/lower_bound_4p607/verify.py --direct
+```
+
+The checker validates 1,200 rational atoms of total mass 16.98264408, then
+checks every translation of a closed side-0.99985 core at 2,881 directions.
+The minimum mass is 1.00000116 across 6,679,269 centre slabs. Strict core
+containment covers all intermediate orientations and puts every captured atom
+inside the parent unit square. Seventeen disjoint interiors would require
+mass at least 17. Uniform dilation gives the radical bound; rational squaring
+verifies the strict decimal below it.
+
+The replay rebuilds the segment-tree and direct-prefix accumulation engines,
+runs 13 positive/refusal controls per engine, checks the pinned Levy source
+and new measure, compares full logs, and validates `result.json`. Geometry
+uses unbounded integers; weight numerators are capped to protect 64-bit sums.
+The engines share the geometric partition and are not independent geometric
+proofs. Discovery scripts and numerical optimization are untrusted.
+See the [complete proof](certificates/lower_bound_4p607/PROOF.md).
+
+## Historical 4.468292 verification
+
+### The checked statement
 
 The certificate proves:
 
@@ -22,10 +66,10 @@ least feasible side length is attained, so equality is also impossible. Hence
 s(17) > 4468292/1000000 = 4.468292.
 ```
 
-## Full deterministic reproduction
+### Full deterministic reproduction
 
 ```bash
-bash ./verify_all.sh
+bash certificates/lower_bound_4p468292/verify_4p468292.sh
 ```
 
 This regenerates the complete tree, checks its raw SHA-256, compares it
@@ -38,7 +82,7 @@ Expected final marker:
 ALL_EXACT_CHECKS_PASSED_4P468292
 ```
 
-## Faster archived-certificate check
+### Faster archived-certificate check
 
 ```bash
 bash certificates/lower_bound_4p468292/verify_archived.sh
@@ -58,14 +102,14 @@ REJECTION_TESTS_PASSED_4P468292
 ARCHIVED_CERTIFICATE_VERIFIED_4P468292
 ```
 
-## Certificate hashes
+### Certificate hashes
 
 ```text
 2838f315302d67da131745925e9ec7dd2a602bb299d1335ce25e4e13a7b7b6d2  square17_lb_4p468292.cert
 a349b81e630ccf7292ae0afe6ed954591f7e88fe6289847f67883204a7ed60ac  square17_lb_4p468292.cert.xz
 ```
 
-## Trust boundary
+### Trust boundary
 
 The point search, certificate generator, and certificate bytes are not trusted.
 Each checker treats the tree as untrusted input and recomputes every leaf claim.
