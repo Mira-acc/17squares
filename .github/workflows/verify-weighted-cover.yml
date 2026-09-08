@@ -4,10 +4,12 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - 'certificates/lower_bound_4p613/**'
       - 'certificates/lower_bound_4p607/**'
       - '.github/workflows/verify-weighted-cover.yml'
   pull_request:
     paths:
+      - 'certificates/lower_bound_4p613/**'
       - 'certificates/lower_bound_4p607/**'
       - '.github/workflows/verify-weighted-cover.yml'
 
@@ -30,9 +32,11 @@ jobs:
           import json
           from fractions import Fraction
           from pathlib import Path
-          result = json.loads(Path('certificates/lower_bound_4p607/result.json').read_text())
-          if Fraction(result['strict_decimal_bound']) < Fraction('4.607028598640'):
+          result = json.loads(Path('certificates/lower_bound_4p613/result.json').read_text())
+          if Fraction(result['strict_decimal_bound']) < Fraction('4.613028635886'):
               raise SystemExit('Lower-bound frontier regression refused')
           PYCODE
       - name: Replay exact geometry and both accumulation engines
+        run: python3 certificates/lower_bound_4p613/verify.py --source
+      - name: Replay preceding weighted certificate
         run: python3 certificates/lower_bound_4p607/verify.py --direct

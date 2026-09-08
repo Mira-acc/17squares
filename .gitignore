@@ -18,3 +18,4 @@ paper/main.out
 
 # Retained weighted-certificate audit and research logs are publication inputs.
 !certificates/lower_bound_4p607/**/*.log
+!certificates/lower_bound_4p613/**/*.log

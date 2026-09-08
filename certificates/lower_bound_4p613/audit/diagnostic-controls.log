@@ -1,0 +1,9 @@
+PASS original exact dual obstruction
+PASS zero dual gives no obstruction
+PASS infeasible dual multiplier is refused
+PASS negative dual multiplier is refused
+PASS core outside the container is refused
+PASS invalid direction is refused
+PASS support outside the container is refused
+PASS optimized Python mode is refused
+8 DIAGNOSTIC CONTROLS PASSED

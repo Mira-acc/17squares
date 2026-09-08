@@ -1,0 +1,15 @@
+{
+  "strict_decimal_bound": "4.610028617263",
+  "weak_endpoint_squared": "17627342188629160696437160000/829429719507765981945905041",
+  "weak_endpoint_decimal_approximation": "4.61002861726316293779605045181792211204390335992116074884343848475434741161330133408295069",
+  "outer_side": "461/100",
+  "core_side": "19997/20000",
+  "atoms": 1672,
+  "directions": 2881,
+  "total_mass": "4248957847/250000000",
+  "minimum_mass": "200000403/200000000",
+  "slabs": 9368005,
+  "certificate_sha256": "3ed84634bc74d2c76afbf83f0f23015d82ffa77311b96c94e5413d19d4040aec",
+  "checker_sha256": "1bb626a560e3c67620b2aa7851bc467db72b3530f6cae394c1d9d9f034910f4b",
+  "status": "Both exact integer accumulation engines accepted. Shared geometric partition; external review pending."
+}

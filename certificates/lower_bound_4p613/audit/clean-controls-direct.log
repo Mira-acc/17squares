@@ -1,0 +1,14 @@
+PASS central point covers every core
+PASS duplicate atoms aggregate correctly
+PASS closed boundary coverage is allowed
+PASS one millionth larger exposes a hole
+PASS underweight by one billionth
+PASS zero covering mass
+PASS mass exactly seventeen is insufficient
+PASS unshrunken core is refused
+PASS angular mesh too coarse is refused
+PASS asymmetric measure is refused
+PASS outside atom is refused
+PASS negative weights are refused
+PASS unexpected trailing input is refused
+13 CONTROLS PASSED

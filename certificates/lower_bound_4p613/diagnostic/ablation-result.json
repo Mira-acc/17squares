@@ -1,0 +1,8 @@
+{
+  "removed_orbits": 19,
+  "removed_atoms": 152,
+  "removed_mass": "19729041/62500000",
+  "remaining_mass": "4170580081/250000000",
+  "scope": "Failure of this fixed B-core certificate after deletion, without reoptimization; not a global impossibility of other measures.",
+  "checker_exit_code": 2
+}

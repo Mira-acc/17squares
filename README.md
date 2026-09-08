@@ -5,15 +5,15 @@ interior-disjoint unit squares, with arbitrary orientations. This repository
 contains an exact computer-assisted proof that
 
 \[
-\boxed{s(17)>4.607028598640}.
+\boxed{s(17)>4.613028635886}.
 \]
 
-The base certificate excludes a packing at side `4.607`. Uniform dilation gives
+The base certificate excludes a packing at side `4.613`. Uniform dilation gives
 
 ```text
-s(17) >= sqrt(17604407342714743536607440400 /
+s(17) >= sqrt(17650291964463886688094912400 /
              829429719507765981945905041)
-       = 4.6070285986402151094200443452...
+       = 4.6130286358861101094200443452...
 ```
 
 The radical endpoint has a weak inequality; rational squaring verifies that the
@@ -24,34 +24,43 @@ upper bound `s(17) <= 4.67553009360455...`.
 
 - [Paper (PDF)](paper/17squares-lower-bound.pdf)
 - [LaTeX source](paper/main.tex) and [build notes](paper/README.md)
-- [Weighted certificate package](certificates/lower_bound_4p607/README.md)
-- [Exact weighted proof](certificates/lower_bound_4p607/PROOF.md)
-- [Attribution and source hashes](certificates/lower_bound_4p607/ATTRIBUTION.md)
+- [Weighted certificate package](certificates/lower_bound_4p613/README.md)
+- [Exact weighted proof](certificates/lower_bound_4p613/PROOF.md)
+- [Attribution and source hashes](certificates/lower_bound_4p613/ATTRIBUTION.md)
 
-The measure assigns nonnegative rational weights to 1,200 atoms, with total
-mass 16.98264408 < 17. An exact sweep checks every admissible translation of a
+The measure assigns nonnegative rational weights to 1,620 atoms, with total
+mass 16.99798498 < 17. An exact sweep checks every admissible translation of a
 closed side-0.99985 core at 2,881 rational directions: the minimum mass is
-1.00000116 across 6,679,269 centre slabs. A strict containment inequality covers
+1.000002103 across 9,116,871 centre slabs. A strict containment inequality covers
 the intervening orientations and places the closed core inside the unit-square
 interior. Seventeen disjoint interiors would require mass at least 17.
 
 The initial 4.59 measure is credited to Joshua Levy's squares project under
-CC BY 4.0. The stronger certificate retains an orbit from Mira's earlier
-4.450837 point set. The weighted principle and sharp dilation lemma are
-credited prior work; the new contribution is the stronger exact certificate.
+CC BY 4.0. The new certificate improves the preceding weighted bound
+`4.607028598640` through new spatial support and weights, with the same core
+side, direction net and exact kernel. The weighted principle and sharp dilation
+lemma are credited prior work.
+
+The [review notes](certificates/lower_bound_4p613/REVIEW.md) record the replay and
+scope checks. Exact diagnostics show that reweighting a specified old dictionary
+cannot pass the core test at 4.61, and that deleting 19 final-stage orbits breaks
+the new certificate. These are restricted statements, not global optimality
+claims. See the [research report](certificates/lower_bound_4p613/RESEARCH.md).
 
 ## Verify
 
-Requirements: Python 3 standard library, C++17 and Boost headers. The historical
+Requirements: Python 3.10 or newer with its standard library, C++17 and Boost headers. The historical
 archive checks also require `xz`, `sha256sum` and POSIX shell tools.
 
-Replay the current theorem, both accumulation engines and all 26 controls:
+Replay the current theorem, both accumulation engines, 26 geometric controls, eight diagnostic controls,
+and the orbit-deletion checks:
 
 ```bash
-python3 certificates/lower_bound_4p607/verify.py --direct
+python3 certificates/lower_bound_4p613/verify.py --source
 ```
 
-Fully reproduce both the weighted theorem and historical certificate:
+Fully reproduce the current and preceding weighted theorems and historical
+triangle-witness certificate:
 
 ```bash
 bash ./verify_all.sh
@@ -61,6 +70,12 @@ See [VERIFY.md](VERIFY.md) for exact statements, hashes and expected output.
 The [weighted replay workflow](.github/workflows/verify-weighted-cover.yml)
 checks the new package in CI. Optimizer dependencies are unnecessary for proof
 replay; optional discovery inputs are retained within the weighted package.
+
+## Preceding weighted result
+
+The [4.607 package](certificates/lower_bound_4p607/README.md) is retained unchanged
+with its exact measure and replay logs. It remains separately reproducible with
+`python3 certificates/lower_bound_4p607/verify.py --direct`.
 
 ## Historical result
 

@@ -6,29 +6,30 @@ Run all current and historical checks from the repository root:
 bash ./verify_all.sh
 ```
 
-This first replays both weighted accumulation engines, then fully regenerates
+This replays both engines for the current and preceding weighted certificates,
+then fully regenerates
 and checks the historical 122,626,747-node certificate. The historical Python
 check is substantially slower than weighted replay alone. Final success is
 `ALL_RETAINED_CHECKS_PASSED`.
 
 ## Current weighted theorem
 
-The weighted package proves `s(17) > 4.607028598640`. Its exact radical endpoint
+The weighted package proves `s(17) > 4.613028635886`. Its exact radical endpoint
 is a weak lower bound:
 
 ```text
-s(17) >= sqrt(17604407342714743536607440400 / 829429719507765981945905041).
+s(17) >= sqrt(17650291964463886688094912400 / 829429719507765981945905041).
 ```
 
 Replay just this package with:
 
 ```bash
-python3 certificates/lower_bound_4p607/verify.py --direct
+python3 certificates/lower_bound_4p613/verify.py --source
 ```
 
-The checker validates 1,200 rational atoms of total mass 16.98264408, then
+The checker validates 1,620 rational atoms of total mass 16.99798498, then
 checks every translation of a closed side-0.99985 core at 2,881 directions.
-The minimum mass is 1.00000116 across 6,679,269 centre slabs. Strict core
+The minimum mass is 1.000002103 across 9,116,871 centre slabs. Strict core
 containment covers all intermediate orientations and puts every captured atom
 inside the parent unit square. Seventeen disjoint interiors would require
 mass at least 17. Uniform dilation gives the radical bound; rational squaring
@@ -36,11 +37,33 @@ verifies the strict decimal below it.
 
 The replay rebuilds the segment-tree and direct-prefix accumulation engines,
 runs 13 positive/refusal controls per engine, checks the pinned Levy source
-and new measure, compares full logs, and validates `result.json`. Geometry
+and new measure, compares full logs, and validates `result.json`. It also runs
+eight exact diagnostic controls, checks the 356-orbit dictionary obstruction,
+and reconstructs and tests deletion of the 19 final-stage orbits in both engines. Geometry
 uses unbounded integers; weight numerators are capped to protect 64-bit sums.
 The engines share the geometric partition and are not independent geometric
 proofs. Discovery scripts and numerical optimization are untrusted.
-See the [complete proof](certificates/lower_bound_4p607/PROOF.md).
+See the [complete proof](certificates/lower_bound_4p613/PROOF.md).
+
+Expected current-package success marker:
+
+```text
+EXACT_REPLAY_AND_DIAGNOSTIC_PASSED
+```
+
+The imported package manifest was checked before integration. The exact kernel
+and input compiler match the preceding package byte-for-byte; the new data,
+diagnostics and replay orchestration are reviewed in
+[REVIEW.md](certificates/lower_bound_4p613/REVIEW.md).
+
+## Preceding 4.607 weighted certificate
+
+```bash
+python3 certificates/lower_bound_4p607/verify.py --direct
+```
+
+This retained package proves `s(17) > 4.607028598640`; it uses the same geometric
+kernel with its own earlier rational measure and result ledger.
 
 ## Historical 4.468292 verification
 
