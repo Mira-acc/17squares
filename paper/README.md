@@ -6,10 +6,11 @@ The paper proves the current exact computer-assisted bound
 s(17) > 46129999999859/9997499999900 = 4.614153538416645696808...
 ```
 
-and develops it as a cumulative proof lineage: classical unavoidable points,
-exact pose-space certificates, weighted fractional covers, Levy's exact event
-sweeps, Guzhou0806's parent-angle/legal-center reduction, and the final
-reweighted parent-aware certificate.
+The exposition follows the proof: disjoint-core counting, parent-angle geometry,
+the exhaustive finite translation check, the computational base bound, and the
+analytic recentering improvement. A separate section proves the 29-core
+intersection-trigger separation. Reproduction details, the dated history of
+improvements, and supplementary results are in appendices.
 
 ## Build
 
@@ -69,9 +70,10 @@ No new translation sweep is required for this sharpening. The replay command
 also runs `sharpening.py` and writes `sharpening.result.json`, checking all
 4,391 scalar inequalities, their minimum slack, and the fixed-library cap.
 
-The paper also proves a compatibility-aware extension using intersection-trigger
-atoms. The paper gives its budget proof and coverage geometry; it is not used in the
-numerical lower bound.
+The paper also proves an extension using intersection-trigger charges, including
+their budget and coverage geometry. These charges are not used in the numerical
+lower bound. Folding parent orientations requires the total charge to be
+`D4` invariant; otherwise all orientations must be covered explicitly.
 
 The finite 29-pose example and independent pointwise-load checker are in
 [`intersection_trigger_29`](../certificates/intersection_trigger_29/). They

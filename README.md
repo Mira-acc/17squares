@@ -69,10 +69,11 @@ The numerical optimizer is not part of the trusted proof path.
 
 ## Paper and research lineage
 
-The technical paper now proves an additional recentered-core analytic sharpening and develops a cumulative proof history: classical
-unavoidable points, exact pose-space certificates, weighted fractional covers,
-Levy's event-sweep machinery, Guzhou's parent-angle/legal-center reduction, and
-the present reweighted parent-aware certificate.
+The paper follows the proof from disjoint-core counting and parent geometry to
+the exhaustive finite verification, the base certificate, and the recentering
+improvement. A separate section proves the finite intersection-trigger
+separation. Reproduction details, supplementary results, and the dated history
+of improvements are in appendices.
 
 - [Rendered PDF](paper/17squares-lower-bound.pdf)
 - [LaTeX source](paper/main.tex)

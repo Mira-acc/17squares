@@ -5,35 +5,31 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{microtype}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{booktabs}
-\usepackage{array}
+\usepackage{booktabs,array}
 \usepackage{enumitem}
+\usepackage{needspace}
 \usepackage{xurl}
 \usepackage[hidelinks]{hyperref}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{proposition}[theorem]{Proposition}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
-
+\newtheorem{corollary}[theorem]{Corollary}
 \newcommand{\Q}{Q}
 \newcommand{\interior}{\operatorname{int}}
+\newcommand{\R}{\mathbb R}
+\newcommand{\ind}{\mathbf 1}
 \newcommand{\abs}[1]{\left|#1\right|}
-\newcommand{\R}{\mathbb{R}}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \title{A Parent-Aware Computer-Assisted Lower Bound for\\Packing 17 Unit Squares in a Square}
 \author{Mira\\\small \url{https://github.com/Mira-acc/17squares}}
 \date{September 2026}
-
 \hypersetup{
   pdftitle={A Parent-Aware Computer-Assisted Lower Bound for Packing 17 Unit Squares in a Square},
   pdfauthor={Mira},
   pdfsubject={Computer-assisted discrete geometry},
-  pdfkeywords={square packing, weighted transversals, unavoidable points, exact arithmetic, parent-aware certificate}
+  pdfkeywords={square packing, weighted covering, exact arithmetic, parent-aware certificates}
 }
 \emergencystretch=2em
 \raggedbottom
@@ -42,967 +38,780 @@
 \maketitle
 
 \begin{abstract}
-Let $s(n)$ denote the least side length of a square that contains $n$ pairwise
-interior-disjoint unit squares, with arbitrary orientations.  We prove by an
-exact computer-assisted base certificate together with a finite
-analytic transport argument that
+Let $s(n)$ be the least side length of a square containing $n$ unit squares
+with pairwise disjoint interiors and arbitrary orientations. We prove
 \[
-  \boxed{s(17)>
-  \frac{46129999999859}{9997499999900}}
+  s(17)>\frac{46129999999859}{9997499999900}
   =4.614153538416645696808\ldots.
 \]
-The base certificate places a nonnegative rational measure in a square of side
-$L=4.613$ and excludes seventeen squares of side $A=3999/4000$.  It is
-\emph{parent aware}: for each continuous parent-angle interval it selects a
-closed core strictly inside the parent and checks that core only over the
-complete center domain attainable by legal parents in that interval.  The
-measure has 3,280 atoms in 417 $D_4$-orbits, total mass $16.999991644$, and
-every selected core has mass at least $1.000000030$.  A recentering theorem
-then reuses these already certified core-center domains for slightly smaller
-parents and a slightly smaller container, yielding the displayed stronger
-rational bound without a new translation sweep.  Finally, we generalize the
-charging language from point measures and threshold atoms to
-\emph{intersection-trigger} charges, which compile finite overlap
-incompatibilities into budgeted spatial resources while retaining a
-two-dimensional event representation.
+The proof assigns a finite nonnegative measure to the container and selects a
+smaller closed square inside each possible packed square. An exact finite
+calculation shows that every selected square captures more than one seventeenth
+of the total mass. Following the parent-aware reduction of Guzhou0806, we
+check only centers attainable by the enclosing square. We then sharpen the
+bound by moving the selected squares within their parents while reusing the
+verified coverage. As a separate result, we construct intersection-trigger
+charges and give an exact 29-square example that separates them from
+nonnegative spatial measures.
 \end{abstract}
 
-\section{Problem and current interval}
-For $L>0$ write $\Q_L=[0,L]^2$.  Let $s(n)$ be the minimum $L$ for which $n$
-pairwise interior-disjoint unit squares can be placed in $\Q_L$.  The minimum
-is attained by compactness.  The best known $17$-square construction is due to
-John Bidwell and has side
-\[
-  L_B=4.6755300936045509516\ldots
-\]
-according to the high-precision catalogue maintained by Ellsworth and the
-historical survey literature\cite{Friedman2009,Ellsworth}.
+\section{Introduction}
 
-Our main result is the following.
+Write $\Q_L=[-L/2,L/2]^2$ for $L>0$. For a positive integer $n$, let $s(n)$
+be the minimum $L$ for which $\Q_L$ contains $n$ unit squares with pairwise
+disjoint interiors. Boundary contacts
+are allowed, and each square may rotate independently. The minimum is attained;
+a compactness argument is given below. For $n=17$, Bidwell's construction gives
+\[
+  s(17)\le L_B,\qquad L_B=4.6755300936045509516\ldots,
+\]
+as recorded in Friedman's survey and Ellsworth's
+catalogue~\cite{Friedman2009,Ellsworth}. We establish the following lower bound.
 
 \begin{theorem}\label{thm:main}
-No packing of seventeen unit squares exists in a square of side
+There is no packing of seventeen unit squares in a square of side
 \[
-  S=\frac{46129999999859}{9997499999900}.
+  S_* = \frac{46129999999859}{9997499999900}.
 \]
-Consequently
-\[
-  s(17)>
-  \frac{46129999999859}{9997499999900}
-  =4.614153538416645696808\ldots.
-\]
+Consequently, $s(17)>S_*$.
 \end{theorem}
 
-Thus the currently certified interval retained by this repository is
+The proof uses a finite nonnegative measure. Inside every possible packed
+square, called a \emph{parent}, we select a smaller closed square, called a
+\emph{core}. The cores lie strictly inside their parents, so cores selected
+from a packing are disjoint even when the parents touch. We arrange that
+every selected core captures mass at least $\gamma$, while the total mass is
+less than $17\gamma$. Seventeen parents would therefore require more mass
+than is available.
+
+The difficulty is to prove the mass bound for every translation and
+orientation of a parent. A finite catalogue assigns one core shape to each
+interval of parent orientations. For that interval we check all centers where
+a parent can occur. This domain can be smaller than the set of centers where
+the core alone fits, and thus imposes fewer coverage constraints.
+
+\paragraph{Contributions and dependencies.}
+Weighted covering extends the classical unavoidable-point argument; recent
+constructions and exact verification methods include those of Burns,
+Massaccesi, and Levy~\cite{Burns,Massaccesi,Levy}. We use Guzhou0806's R012
+parent-angle catalogue and legal-center reduction~\cite{Guzhou}, whose
+antecedents include Levy's parent-center restrictions. Our base certificate
+refines the angle catalogue and changes both the weights and the spatial
+support, giving
 \[
-  4.614153538416645696808\ldots <s(17)
-  \le 4.6755300936045509516\ldots.
+  s(17)>\frac{18452}{3999}=4.61415353838459614903\ldots.
 \]
-The lower-bound proof is independent of any assumption that a near-optimal
-packing resembles Bidwell's construction.
+A recentering argument then proves Theorem~\ref{thm:main}, improving this base
+constant by approximately $3.205\times10^{-11}$ without another translation
+sweep. The intersection-trigger result is independent of this numerical bound:
+it shows a strict advantage over spatial measures on a specified finite family,
+not coverage of every possible parent.
 
-\section{How the lower bound developed}\label{sec:lineage}
-The current certificate is best understood as the end of a sequence of
-increasingly flexible transversal arguments.  Table~\ref{tab:lineage} lists
-results that directly influenced this project or provide important nearby
-benchmarks.  Some were subsequently superseded; inclusion in the table does
-not assert coauthorship of the present theorem.
+Sections~\ref{sec:certificate}--\ref{sec:verification} give the certificate
+criterion, the complete finite reduction, and the base computation.
+Section~\ref{sec:recenter} proves the sharpening, and Section~\ref{sec:triggers}
+treats triggers. Reproduction instructions and supplementary results, including
+the dated history of improvements, are in the appendices. The computational
+claims use rational data and exact arithmetic; the geometric reductions are
+proved here. The complete argument has not been formalized in a proof assistant.
 
-\begin{table}[!t]
+\section{Parent-aware certificates}\label{sec:certificate}
+
+\subsection{Counting disjoint cores}
+
+A \emph{charge} assigns a nonnegative number $C(K)$ to each closed core $K$.
+Its \emph{budget} is any number $\mathcal B$ such that
+\[
+  \sum_i C(K_i)\le\mathcal B
+\]
+for every finite pairwise-disjoint family of cores. For a finite nonnegative
+measure $\mu$, the charge $C(K)=\mu(K)$ has budget $M=\mu(\R^2)$.
+
+\begin{lemma}[Disjoint-core counting]\label{lem:budget}
+Suppose every admissible parent admits a closed core strictly inside its
+interior with charge at least $\gamma>0$. If the charge has budget
+$\mathcal B<n\gamma$, then $n$ admissible parents cannot have pairwise
+disjoint interiors.
+\end{lemma}
+
+\begin{proof}
+Choose one such core from each parent. These cores are disjoint, so their
+total charge is both at least $n\gamma$ and at most $\mathcal B$, a
+contradiction.
+\end{proof}
+
+The strict containment is essential for atomic measures: an atom on a shared
+parent boundary must not be counted twice. The numerical certificate below
+uses only point masses. The more general language will also apply to the
+charges in Section~\ref{sec:triggers}.
+
+\subsection{Orientations, containment, and legal centers}
+
+Let $D_4$ be the eight symmetries of the container. We choose a $D_4$-invariant
+measure, so an individual parent may be reflected into orientation
+$\phi\in[0,\pi/4]$ without changing any core mass. The square's own quarter-turn
+symmetry accounts for the remaining orientations. This reduction imposes no
+symmetry on a hypothetical packing.
+
+Use the half-angle parameter $u=\tan(\phi/2)$, whose physical folded range is
+$[0,\sqrt2-1]$. For the rational computations it is convenient to define,
+more generally for $0\le u<1$,
+\begin{equation}\label{eq:trig}
+  c(u)=\frac{1-u^2}{1+u^2},\qquad
+  s(u)=\frac{2u}{1+u^2},\qquad
+  f(u)=c(u)+s(u).
+\end{equation}
+The first two quantities are the cosine and sine of $2\arctan u$; $f(u)$ is
+the axis-parallel width of a unit square in that direction.
+
+A catalogue row consists of an interval $I_j=[\alpha_j,\beta_j]\subset[0,1)$,
+a core parameter $t_j\in[0,1)$, and a core side $B_j>0$. The parent side is
+$A>0$. To compare the two directions, define
+\begin{equation}\label{eq:g}
+  g(t,u)=c(t)c(u)+s(t)s(u)+\abs{s(t)c(u)-c(t)s(u)}.
+\end{equation}
+When the relative angle is at most $\pi/4$ in absolute value, $B_jg(t_j,u)$
+is the width of the core across either parent normal.
+
+\begin{lemma}[Interval containment]\label{lem:contain}
+Suppose the angles represented by $t_j$ and each endpoint of $I_j$ differ
+by at most $\pi/4$ in absolute value. Put
+\[
+  G_j=\max\{g(t_j,\alpha_j),g(t_j,\beta_j)\}.
+\]
+If $B_jG_j<A$, then the concentric closed core lies strictly inside the
+side-$A$ parent for every $u\in I_j$.
+\end{lemma}
+
+\begin{proof}
+The largest absolute angular difference from a fixed direction occurs at an
+interval endpoint. On $[0,\pi/4]$, the function $\cos v+\sin v$ is increasing.
+Thus the core width across either parent normal is at most $B_jG_j<A$.
+Both normal-coordinate inequalities are strict, proving the claim.
+\end{proof}
+
+The relative-angle hypothesis is checked rationally at each endpoint: the dot
+product of the direction vectors must be positive and at least the absolute
+value of their cross product. No sampling assertion is used between endpoints.
+
+A side-$A$ parent with parameter $u$ fits in $\Q_L$ precisely when its center
+lies in the square of half-side $(L-Af(u))/2$, provided this is nonnegative.
+The complete envelope for an interval has a simple exact description.
+
+\begin{lemma}[Legal-center envelope]\label{lem:domain}
+Set
+\[
+  m_j=\min\{f(\alpha_j),f(\beta_j)\},\qquad
+  d_j=\frac{L-Am_j}{2}.
+\]
+If $d_j\ge0$, the union of the legal center sets over $I_j$ is exactly
+$D_j=[-d_j,d_j]^2$.
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+  f'(u)=\frac{2(1-2u-u^2)}{(1+u^2)^2},
+\]
+$f$ has a single interior maximum and no interior minimum on $[0,1)$.
+Its minimum on $I_j$ is therefore $m_j$. The nonempty center squares are
+nested, and the endpoint attaining $m_j$ supplies the largest one.
+\end{proof}
+
+In particular, every point of $D_j$ is attained by a legal parent at an
+endpoint orientation. When an interval extends slightly beyond the folded
+physical range, using its full envelope merely checks additional centers.
+
+\Needspace{17\baselineskip}
+\subsection{The certificate criterion}
+
+\begin{theorem}[Parent-aware certificate]\label{thm:certificate}
+Fix a positive integer $n$ and $L,A>0$. Let $\mu$ be a finite nonnegative
+$D_4$-invariant measure supported in $\Q_L$, and let $\gamma>0$. Suppose a
+finite catalogue has the following properties:
+\begin{enumerate}[label=(\roman*),leftmargin=2.3em]
+\item Its intervals cover $[0,\sqrt2-1]$.
+\item Every row satisfies Lemma~\ref{lem:contain}, and its domain $D_j$ from
+Lemma~\ref{lem:domain} has $d_j>0$.
+\item Every core from row $j$ centered in $D_j$ has mass at least $\gamma$.
+\item $M:=\mu(\R^2)<n\gamma$.
+\end{enumerate}
+Then $n$ side-$A$ squares cannot pack in $\Q_L$, and $s(n)>L/A$.
+\end{theorem}
+
+\begin{proof}
+Fold each parent separately and choose a catalogue interval containing its
+orientation. Its center lies in $D_j$, so the specified concentric core has
+mass at least $\gamma$ and lies strictly inside the parent. Apply the inverse
+reflection to the core. Invariance of $\mu$ preserves its mass, and strict
+containment is preserved. Lemma~\ref{lem:budget} excludes a packing.
+
+Scaling by $A$ excludes a unit-square packing at side $L/A$. To obtain the
+strict inequality, note that the minimum defining $s(n)$ is attained. A grid
+packing supplies a finite upper bound on the container side; centers and
+orientations then range over compact sets. Containment is closed under limits.
+Interior overlap is an open condition on a pair of square poses, so
+interior nonoverlap is closed. A sequence of packings whose container sides
+approach the infimum therefore has a feasible limit. Since the endpoint
+$L/A$ has been excluded, that minimum is strictly larger.
+\end{proof}
+
+The remaining universal condition is (iii). We next reduce it to a finite
+arrangement calculation and prove that the calculation includes all boundary
+placements.
+
+\section{Finite verification and the base bound}\label{sec:verification}
+
+\subsection{Capture rectangles}
+
+For the computation, write $\mu=\sum_{k=1}^N\omega_k\delta_{p_k}$ with
+$\omega_k\ge0$. Assume $L,A$, the catalogue parameters, the atom coordinates,
+and the weights are rational.
+Fix one row and abbreviate its parameters by $t,B,d$. Write $c=c(t)>0$ and
+$s=s(t)\ge0$. Rotate a potential core center $(x,y)$ into the core frame:
+\[
+  \xi=cx+sy,\qquad \zeta=-sx+cy.
+\]
+For a spatial atom $p$, let $(\xi_p,\zeta_p)$ be its rotated coordinates.
+The closed core captures $p$ exactly when its center belongs to
+\begin{equation}\label{eq:capture}
+  R_p=[\xi_p-B/2,\xi_p+B/2]\times
+      [\zeta_p-B/2,\zeta_p+B/2].
+\end{equation}
+Thus the mass at a center is the sum of weights of the rectangles containing
+it. The legal-center square becomes the rotated square
+\begin{equation}\label{eq:rotated-domain}
+  \Omega=\{(\xi,\zeta):\abs{c\xi-s\zeta}\le d,
+                             \abs{s\xi+c\zeta}\le d\}.
+\end{equation}
+All rectangle edges and domain vertices are rational.
+
+\subsection{Which cells must be checked?}
+
+Split the $\xi$-axis at every vertical edge of a capture rectangle and at the
+domain extremes $\pm d(c+s)$. Between consecutive events, the rectangles
+active in the $\xi$ direction are fixed. Split the $\zeta$-axis at all
+horizontal rectangle edges. Each resulting open rectangular cell has a
+constant captured mass. We must identify exactly those cells meeting the
+interior of $\Omega$.
+
+For an open vertical slab $(a,b)$ inside the domain's horizontal extent,
+consider the projection of
+$\Omega\cap([a,b]\times\R)$ onto the $\zeta$-axis. Convexity makes this a
+closed interval $[\ell,h]$. The projection of the corresponding open
+interior intersection is $(\ell,h)$: the closed intersection is the closure
+of its interior, and linear projection of that nonempty convex interior is
+an open interval. Consequently a horizontal cell $(v_k,v_{k+1})$ is reachable
+with positive area exactly when
+\begin{equation}\label{eq:reachable}
+  \max\{v_k,\ell\}<\min\{v_{k+1},h\}.
+\end{equation}
+It is the projection of the \emph{whole slab} that matters; a cross-section
+at its midpoint can miss reachable cells.
+
+Here is an exact formula for that projection. If $s>0$, the lower and upper
+boundaries of $\Omega$ are
+\begin{align*}
+  l(\xi)&=\max\{(c\xi-d)/s,\,(-d-s\xi)/c\},\\
+  h_0(\xi)&=\min\{(c\xi+d)/s,\,(d-s\xi)/c\}.
+\end{align*}
+The convex function $l$ is minimized at $d(c-s)$, and the concave function
+$h_0$ is maximized at $-d(c-s)$. Define
+$\operatorname{clamp}(z;a,b)=\min\{b,\max\{a,z\}\}$. Then
+\begin{equation}\label{eq:projection}
+  \ell=l(\operatorname{clamp}(d(c-s);a,b)),\qquad
+  h=h_0(\operatorname{clamp}(-d(c-s);a,b)).
+\end{equation}
+When $s=0$, the domain is axis aligned and $[\ell,h]=[-d,d]$.
+These formulas also handle a domain vertex lying inside the slab.
+
+The finite algorithm sums the active weights on every horizontal cell
+satisfying~\eqref{eq:reachable}, for every vertical slab. Its smallest sum is
+the smallest mass attained away from the arrangement and domain boundaries.
+All comparisons use rational arithmetic.
+
+\begin{lemma}[Boundary completeness]\label{lem:boundary}
+For nonnegative atomic weights and $d>0$, the minimum over the reachable open
+cells equals the minimum over the whole closed domain $\Omega$.
+\end{lemma}
+
+\begin{proof}
+Every point of $\Omega$ is a limit of interior points avoiding the finitely
+many rectangle edges. A subsequence lies in one fixed open cell. Every
+capture rectangle containing that cell is closed, so it also contains the
+limit point. Nonnegative weights imply that the mass at the limit is at
+least the mass in that cell. Conversely, each reachable open cell contains
+a point of $\Omega$. The two minima are therefore equal.
+\end{proof}
+
+This proves both obligations of the finite reduction: every tested mass is
+realized by a legal center, and no untested placement has smaller mass. The
+implementation additionally reconstructs a rational center for each reported
+minimum and recounts all atoms there. That recount checks the reported witness;
+the arrangement argument above establishes exhaustiveness.
+
+\Needspace{14\baselineskip}
+\subsection{The verified certificate}
+
+\begin{proposition}[Computational base certificate]\label{prop:base}
+For
+\[
+  L=\frac{4613}{1000},\qquad A=\frac{3999}{4000},
+\]
+the accompanying rational data satisfy Theorem~\ref{thm:certificate} with
+$n=17$ and
+\[
+  M=\frac{4249997911}{250000000}=16.999991644,
+  \qquad
+  \gamma=\frac{100000003}{100000000}=1.000000030.
+\]
+In particular, $s(17)>18452/3999$.
+\end{proposition}
+
+\begin{proof}[Computer-assisted verification]
+The measure has 3,280 atoms in 417 positive $D_4$-orbits. Its 4,391 catalogue
+intervals meet exactly, start at zero, and end at the rational value
+$207107/500000>\sqrt2-1$. Each row satisfies the endpoint containment checks
+and has $d_j>0$. The exact sweep just described verifies mass at least
+$\gamma$ throughout every $D_j$. Finally,
+\[
+  17\gamma-M=\frac{4433}{500000000}>0.
+\]
+Theorem~\ref{thm:certificate} gives the conclusion. Appendix~\ref{app:replay}
+identifies the data, replay procedure, and arithmetic assumptions.
+\end{proof}
+
+\section{Reusing coverage by recentering cores}\label{sec:recenter}
+
+Concentricity helped construct the base certificate, but the counting proof
+requires only strict containment. We can therefore shrink the parents and
+container slightly while moving each chosen core back into a center domain
+where its mass has already been verified. The measure stays fixed in the
+common container-centered coordinate system.
+
+\subsection{A general transfer principle}
+
+Let $K_j$ denote a core shape centered at the origin, and suppose every
+translate $y+K_j$ with $y\in D_j$ has charge at least $\gamma$. For a parent
+shape $P$ centered at the origin, define
+\[
+  E_j(P)=\{v:v+K_j\subset\interior P\}.
+\]
+A parent centered at $x$ can use entry $j$ exactly when some $y\in D_j$
+satisfies $y-x\in E_j(P)$. Equivalently, $x\in D_j-E_j(P)$, where
+$D-E=\{y-v:y\in D,\ v\in E\}$.
+For centrally symmetric $P$ and $K_j$, the set $E_j(P)$ is also centrally
+symmetric, so $D_j-E_j(P)=D_j+E_j(P)$.
+
+\begin{proposition}[Recentered-core transfer]\label{prop:recenter}
+Suppose $C$ has budget $\mathcal B<n\gamma$. If every admissible parent
+$P+x$ satisfies
+\[
+  x\in\bigcup_j(D_j-E_j(P)),
+\]
+then $n$ such parents cannot have pairwise disjoint interiors.
+\end{proposition}
+
+\begin{proof}
+Membership supplies an index $j$ and a certified center $y$ with
+$y+K_j\subset\interior(P+x)$. The selected core has charge at least
+$\gamma$. Apply Lemma~\ref{lem:budget}.
+\end{proof}
+
+No continuity of the atomic mass under translation is assumed: the mass
+statement is used only at an already verified center.
+
+\subsection{An exact criterion for square domains}
+
+Let a new parent have side $a>0$, orientation $\phi\in[0,\pi/4]$, and
+container side $H>0$. Define
+\[
+  F(\phi)=\cos\phi+\sin\phi,\qquad
+  q=\frac{H-aF(\phi)}2.
+\]
+Thus its legal center set is $[-q,q]^2$ when $q\ge0$, and
+$f(u)=F(2\arctan u)$ in the earlier notation. Suppose the old core has side
+$B$, angle $\theta$, and certified center domain $[-d,d]^2$. Its width
+across either parent normal is
+\[
+  w(\phi)=B\bigl(\abs{\cos(\theta-\phi)}+
+                         \abs{\sin(\theta-\phi)}\bigr).
+\]
+Write $[z]_+=\max\{z,0\}$.
+
+\begin{lemma}[Square recentering]\label{lem:recenter}
+If $q\ge0$ and $d\ge0$, every legal parent center admits a strictly interior
+core with center in $[-d,d]^2$ if and only if
+\begin{equation}\label{eq:recenter}
+  w(\phi)+F(\phi)[H-aF(\phi)-2d]_+<a.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Clamp each coordinate of a parent center to $[-d,d]$. Each coordinate moves
+by at most $[q-d]_+$, so displacement along either parent normal is at most
+$F(\phi)[q-d]_+$. Adding the core half-width proves sufficiency.
+
+For necessity when $q>d$, choose the parent center $(q,q)$. Every available
+core center has both coordinates at most $d$, so displacement along the
+normal $(\cos\phi,\sin\phi)$ has magnitude at least $F(\phi)(q-d)$.
+Strict containment forces~\eqref{eq:recenter}. When $q\le d$, concentric
+placement is available, and the necessary and sufficient condition is
+$w(\phi)<a$.
+\end{proof}
+
+\subsection{The scalar sharpening}
+
+For row $j$ of the base certificate, retain $m_j,G_j,d_j$ and set
+\[
+  \eta_j=A-B_jG_j>0.
+\]
+Choose $0<\varepsilon<A$ and $0<\delta<L$, and put
+$a=A-\varepsilon$, $H=L-\delta$. Let $F_j$ be an upper bound for $f(u)$ on
+$I_j$. For any folded physical parameter $u\in I_j$,
+\begin{align*}
+  H-af(u)-2d_j
+    &=A(m_j-f(u))+\varepsilon f(u)-\delta\\
+    &\le\varepsilon F_j-\delta.
+\end{align*}
+Moreover, $w(2\arctan u)=B_jg(t_j,u)\le A-\eta_j$.
+Substitution into~\eqref{eq:recenter} shows that the sufficient condition
+\begin{equation}\label{eq:scalar}
+  \eta_j>\varepsilon+F_j[\varepsilon F_j-\delta]_+
+\end{equation}
+allows every legal new parent in that interval to use its old core and center
+domain. Empty legal-center sets impose no obligation.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Take
+\[
+  \varepsilon=10^{-11},\qquad \delta=\frac{141}{10^{13}}.
+\]
+For each interval not containing $\sqrt2-1$, use the larger endpoint value
+of $f$ as $F_j$. For an interval containing that maximum, use the rational
+upper bound $1414213563/10^9>\sqrt2$. Exact evaluation of all 4,391
+inequalities~\eqref{eq:scalar} gives
+\[
+  \min_j\bigl(\eta_j-\varepsilon
+       -F_j[\varepsilon F_j-\delta]_+\bigr)>10^{-15}.
+\]
+The finite arithmetic check is included in the reproduction procedure.
+
+Each new parent therefore admits a core whose mass is at least the same
+$\gamma$ as in Proposition~\ref{prop:base}. Fold and unfold each parent as
+before; both containers have the same symmetry center, and the old measure
+remains $D_4$ invariant. The old total mass $M$ is still a valid budget,
+even if some of its atoms lie outside the smaller container. Since
+$M<17\gamma$, Proposition~\ref{prop:recenter} excludes seventeen side-$a$
+parents in $\Q_H$. Scaling and the compactness argument give
+\[
+  s(17)>\frac{H}{a}
+  =\frac{L-\delta}{A-\varepsilon}
+  =\frac{46129999999859}{9997499999900}.
+\]
+\end{proof}
+
+\section{Intersection-trigger charges}\label{sec:triggers}
+
+The preceding bound uses additive spatial mass. We now construct charges that
+also reflect incompatibility between possible square poses. This section gives
+a general budget rule and a finite separation result; a packing improvement
+would additionally require coverage for every legal parent.
+
+\subsection{Intersecting triggers and their budget}
+
+Let $T_1,\ldots,T_r$ be nonempty finite sets of points, called triggers, with
+$T_i\cap T_j\ne\varnothing$ for $i\ne j$. Define
+\[
+  C_T(K)=\ind\{T_i\subseteq K\text{ for some }i\}.
+\]
+
+\begin{proposition}\label{prop:trigger}
+The charge $C_T$ has budget one on pairwise-disjoint cores.
+\end{proposition}
+
+\begin{proof}
+If two cores activate the same trigger, they share a point because that
+trigger is nonempty. If they activate different triggers, they share a point
+in their intersection. Thus two disjoint cores cannot both be charged.
+\end{proof}
+
+For example, Levy's two-of-three threshold charge~\cite{Levy} uses the three
+two-element subsets of a three-point set as triggers. More generally, for a
+finite set $X$, integer $k\ge1$, and weight $w\ge0$, a threshold charge
+activates when a core contains at least $k$ points of $X$. Its budget is
+$w\lfloor |X|/k\rfloor$, since disjoint cores have disjoint traces on $X$.
+For arbitrary nonempty triggers, their matching number---the largest number
+of pairwise-disjoint triggers---is a valid budget.
+
+To obtain triggers from geometry, start with square poses
+$V_1,\ldots,V_r$ having pairwise-overlapping interiors, with $r\ge2$. Choose
+\[
+  p_{ij}=p_{ji}\in\interior V_i\cap\interior V_j,
+  \qquad T_i=\{p_{ij}:j\ne i\}.
+\]
+Then $T_i\subset\interior V_i$ and $p_{ij}\in T_i\cap T_j$. The resulting
+budget-one charge activates on every $V_i$. Because the finitely many
+witnesses lie strictly inside their squares, activation persists for a
+sufficiently small change in each pose.
+
+\subsection{A finite separation from spatial measures}
+
+\begin{proposition}[29-core separation]\label{prop:separation}
+There are 29 closed squares $K_i$ of side $499/500$ and an intersection-trigger
+charge with budget one such that $C_T(K_i)=1$ for every $i$, whereas every
+nonnegative Borel measure $\nu$ satisfying $\nu(K_i)\ge1$ for all $i$ has
+\[
+  \nu(\R^2)\ge\frac{81407286808}{59431493389}
+  =1.3697668048682659\ldots>1.
+\]
+\end{proposition}
+
+\begin{proof}[Computer-assisted construction and proof]
+The accompanying data specify 29 rational unit-square poses $V_i$, positive
+rational weights $\lambda_i$, and 406 pair witnesses. Every required witness
+has inward normal distance greater than $1/1000$ from the boundary of its
+unit square. It therefore lies inside the concentric closed square $K_i$ of
+side $499/500$. The 29 triggers each contain 28 witnesses, and their pairwise
+intersections prove $C_T(K_i)=1$ and budget one.
+
+The exact weighted sum and maximum pointwise load are
+\[
+  W:=\sum_i\lambda_i=\frac{81407286808}{79999999999},\qquad
+  \Lambda:=\max_{x\in\R^2}\sum_i\lambda_i
+             \ind_{\interior V_i}(x)=\frac{59431493389}{79999999999}.
+\]
+To check the latter equality, partition the plane at all vertex abscissae and
+all edge-intersection abscissae. In each open vertical slab, edge order is
+fixed, so a rational cross-section enumerates every open cell's covering
+set. Coincident events are grouped. At any boundary point, all open squares
+containing that point also contain a neighborhood of it; hence no boundary
+load exceeds the open-cell maximum. A maximizing witness is recounted
+directly. The rational data and replay are specified in
+Appendix~\ref{app:replay}.
+
+Since $K_i\subset\interior V_i$, the same upper bound $\Lambda$ holds for
+the weighted indicators of the closed cores, including their boundaries.
+For any finite measure $\nu$ as in the statement,
+\[
+  W\le\sum_i\lambda_i\nu(K_i)
+    =\int\sum_i\lambda_i\ind_{K_i}\,d\nu
+    \le\Lambda\nu(\R^2).
+\]
+Division by $\Lambda$ proves the stated bound. Infinite total mass satisfies
+it trivially.
+\end{proof}
+
+\subsection{Coverage geometry and symmetry}
+
+At a fixed core direction, let $(\xi_p,\zeta_p)$ be the coordinates of a
+trigger point in the core frame. The centers of side-$B$ cores containing
+all of $T_i$ form the rectangle
+\[
+  R_i=\left[\max_{p\in T_i}\xi_p-B/2,
+             \min_{p\in T_i}\xi_p+B/2\right]
+       \times
+       \left[\max_{p\in T_i}\zeta_p-B/2,
+             \min_{p\in T_i}\zeta_p+B/2\right],
+\]
+where a reversed interval means the rectangle is empty. Thus $C_T$ is the
+indicator of $\bigcup_{i=1}^rR_i$. A finite vertical-slab decomposition again
+gives exact coverage cells. Rectangles belonging to a single trigger charge
+must be evaluated as a union: an overlapping pair contributes one, not two.
+
+One can also start from an overlap graph $G$, choosing a shared interior
+witness for each edge and a private interior witness for each isolated vertex.
+Each vertex trigger contains its incident edge witnesses, or its private
+witness if the vertex is isolated. Disjoint charged
+cores must select distinct, nonadjacent vertices, so any proved upper bound
+$b$ on the independence number of $G$ gives a budget $b$.
+
+Nonnegative sums of charges have the sum of their budgets, with no
+independence assumption. In particular,
+\[
+  C(K)=\mu(K)+\sum_h w_h C_{T^{(h)}}(K),\qquad
+  \mathcal B=M+\sum_h w_h b_h
+\]
+satisfies Lemma~\ref{lem:budget} for $w_h\ge0$. The recentering proposition
+also applies once the necessary coverage is proved. To use the folded-angle
+certificate, however, the \emph{total charge} must be $D_4$ invariant.
+Otherwise coverage must be checked over the full orientation range. Averaging
+$C(gK)$ over $g\in D_4$ preserves its budget and gives an invariant charge,
+but its coverage must be established for that averaged charge. The finite
+separation above does not use an orientation fold.
+
+\paragraph{Acknowledgments.}
+The direct mathematical and software dependencies are credited above and in
+the artifact documentation. The research, computation, and exposition were
+developed with substantial AI assistance under human direction. This is a
+computer-assisted working preprint; independent external review remains open.
+
+\appendix
+\section{Reproducibility and arithmetic assumptions}\label{app:replay}
+
+The public artifact~\cite{MiraRepo} contains the exact inputs, checkers, and
+result records. The paper uses centered coordinates; data stored in
+$[0,L]^2$ are translated by $(-L/2,-L/2)$ when interpreted in this notation.
+This common change of origin also applies to the smaller container in the
+recentering argument.
+
+\subsection{Packing certificate}
+
+The directory \path{certificates/lower_bound_4p614153/} contains
+\path{certificate.json}, the authoritative base input; \path{verify.py} and
+\path{parent_sweep.cpp}, the exact replay; and \path{sharpening.py}, the finite
+recentering check. An orbit row $(x,y,w)$ expands into all distinct $D_4$
+images of $(x/10^5,y/10^5)$, each with weight $w/D$, where $D$ is the recorded
+weight denominator. A catalogue row stores the four rational values
+$(\alpha_j,\beta_j,t_j,B_j)$.
+
+The loader rejects duplicate orbit sites, negative weights, inconsistent
+mass totals, incomplete interval coverage, failed strict-containment checks,
+and degenerate center domains. It also verifies that the cores fit throughout
+the supplied domains. The default input's exact byte identity is checked
+against the SHA-256 recorded in the package manifest and result record; the
+mathematical coverage is then recomputed. From the repository root, run
+\begin{verbatim}
+python3 certificates/lower_bound_4p614153/verify.py \
+  --output /tmp/n17-replay --upstream --direct
+python3 certificates/lower_bound_4p614153/test_verify.py
+python3 certificates/lower_bound_4p614153/check_diagnostics.py
+\end{verbatim}
+The output directory must not already exist. Requirements are Python 3.10+,
+a C++17 compiler with OpenMP, and Boost headers. Numerical optimization and
+network access are not part of verification.
+
+The current catalogue requires 27,918,671 center slabs. The two accumulation
+modes, a segment tree and a direct prefix calculation, must agree on every
+interval minimum. They share the geometric partition and do not constitute
+two independent geometric proofs. With \texttt{--upstream}, the command also
+reconstructs and checks all 2,925 R012 intervals from the pinned source
+in~\cite{Guzhou}; it does not run that source's Python sweep. Earlier research
+runs of the source-distinct Python implementation are documented separately
+in the result record.
+
+Geometric comparisons use unbounded integers or exact rational arithmetic.
+Integer weight accumulators are signed 64-bit values; validation bounds the
+total nonnegative integer weight by $10^{12}$, below the accumulator limits.
+The checker requires a complete output for every catalogue row and verifies
+the counting inequality using the recomputed minima.
+
+The recentering check verifies every inequality~\eqref{eq:scalar}, the bound
+on $\sqrt2$, positivity of the new parameters, and nonempty legal-center
+domains. Full exact values of its minimum slack and the cap in
+Appendix~\ref{app:cap} are retained in \path{result.json} and in the replay's
+\path{sharpening.result.json}. The support and catalogue were found by numerical
+search; their validity depends only on this exact replay and the reductions
+proved in the main text.
+
+\subsection{Trigger certificate}
+
+The directory \path{certificates/intersection_trigger_29/} contains
+\path{intersection-atom.json}, \path{clique-29-poses-with-weights.csv}, the
+pinned source data, and an exact Python checker. Run
+\begin{verbatim}
+python3 certificates/intersection_trigger_29/verify.py
+python3 certificates/intersection_trigger_29/test_verify.py
+\end{verbatim}
+Only Python 3.10+ and its standard library are needed. The checker validates
+rational unit rotations, containment of the poses in the side-$4.67$ box,
+every shared witness and inward margin, and all fractional weights. It
+computes the 29-pose load across 1,475 arrangement slabs, including a direct
+recount of a maximizing point. Source hashes identify the supplied artifacts;
+the separation proof checks the selected poses directly and assumes no load
+bound for the full source family.
+
+\section{Historical and supplementary results}\label{app:history}
+
+\subsection{Selected lower-bound history}
+
+Table~\ref{tab:lineage} records the results that shaped this work and nearby
+benchmarks. Classical unavoidable-point arguments lead to the integral
+counting rule; fractional measures and restricted parent-center domains
+provide the successive relaxations used here. Other geometric approaches
+include the work of Stromquist, Nagamochi, and
+MacIver~\cite{Stromquist2003,Nagamochi2005,MacIver}. Detailed attribution and
+date evidence are retained in \path{CONTRIBUTORS.md} and
+\path{paper/HISTORY-DATES.md}.
+
+\begin{table}[!htbp]
 \centering
-\caption{Selected lower-bound lineage for $n=17$.  Ordered by bound, not date; decimals are for orientation. Dates refer to source publication or retained records; Green's date is the reported communication year.}
+\caption{Selected $n=17$ lower bounds, ordered by bound rather than date.
+Dates identify publication or retained records, not necessarily discovery;
+Green's is the reported communication year. Rounded values marked $\approx$
+are only summaries of their source bounds.}
 \label{tab:lineage}
 \small
-\begin{tabular}{@{}L{0.14\textwidth}L{0.18\textwidth}L{0.20\textwidth}L{0.40\textwidth}@{}}
+\begin{tabular}{@{}L{0.16\textwidth}L{0.23\textwidth}L{0.20\textwidth}L{0.33\textwidth}@{}}
 \toprule
-Date & Contributor / source & Bound & Main contribution\\
+Date & Contributor / source & Bound & Contribution\\
 \midrule
-2000 & Trevor Green, via Friedman & $4.445208\ldots$ & Classical sixteen-point unavoidable-set scaffold; the long-standing published benchmark.\\
-2026-07-18 & Kim Brandwijk & $4.45$ & Exact sixteen-point certificate in the 2026 public certificate sequence\cite{Brandwijk}.\\
-2026-08-10; 2026-08-11 & Mira & $4.450837$, later $4.468292$ & Exact pose-space subdivision for sixteen unavoidable rational points; the later version adds triangle-piercing leaves.\\
-2026-08-11 & Stanislav Fort & $4.456575$ & Independent optimization of the same exact sixteen-point subdivision architecture.\\
-2026-08-06 & Sam Burns & $4.4811$ & Pure weighted atomic certificate: replace sixteen unit witnesses by a fractional covering measure.\\
-2026-08-21 & Gustavo Massaccesi & $4.5058$ & LP-derived weighted measure with a smaller support, checked by an exact direction/event sweep\cite{Massaccesi}.\\
-2026-08-16 & anabologyco-maker & $4.5705$ & Weighted measure with an exact orientation partition and a Lean layer for the finite computation.\\
-2026-09-04 & Joshua Levy & $4.59$ & Reusable weighted-certificate generator, exact event-cell verification, independently checked interval coverage, and later dilation/parent-center machinery.\\
-2026-09-07 & Mira continuation & $4.607028598640\ldots$, then $4.613028635886\ldots$ & Finer angular control, mixed support geometry, dual-guided column generation, and exact dilation.\\
-2026-09-19 & Guzhou0806 / N17 & $4.613046130461\ldots$ & Parent-angle catalogue: check only centers attainable by legal parents and allow the interior core to depend on the parent-angle interval.\\
-2026-09-19 & This work & $4.614153538416\ldots$ & Adaptive parent-aware intervals plus reweighted/wall-adjusted support give $4.614153538384\ldots$; an analytic recentering transfer then gives the displayed stronger rational bound without a new global sweep.\\
+2000 & Green, via Friedman~\cite{Friedman2009} & $\approx4.445208$ & Sixteen unavoidable points.\\
+2026-07-18 & Brandwijk~\cite{Brandwijk} & $4.45$ & Exact point certificate.\\
+2026-08-10; 2026-08-11 & Mira~\cite{MiraRepo} & $4.450837$; $4.468292$ & Exact pose subdivision; later triangle witnesses.\\
+2026-08-11 & Fort~\cite{Fort} & $4.456575$ & Independent exact pose subdivision.\\
+2026-08-06 & Burns~\cite{Burns} & $4.4811$ & Fractional atomic measure.\\
+2026-08-21 & Massaccesi~\cite{Massaccesi} & $4.5058$ & LP-designed weighted support.\\
+2026-08-16 & anabologyco-maker~\cite{Anabology} & $4.5705$ & Weighted certificate with a Lean finite-check layer.\\
+2026-09-04 & Levy~\cite{Levy} & $4.59$ & Reusable exact event sweeps and coverage checks.\\
+2026-09-07 & Mira continuation~\cite{MiraRepo} & $\approx4.607029$; $\approx4.613029$ & Support and angle refinement; exact dilation.\\
+2026-09-19 & Guzhou0806 / R012~\cite{Guzhou} & $\approx4.613046$ & Parent-angle catalogue and legal-center coverage.\\
+2026-09-19 & This work & $\approx4.614154$ & New measure and catalogue; analytic recentering.\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The classical unavoidable-point method is the integral special case of the
-weighted method used below.  If every unit square contains one of sixteen
-points strictly in its interior, then seventeen disjoint interiors would need
-seventeen distinct points.  The August 2026 certificates of Mira and Fort made
-that argument completely finite by subdividing the three-dimensional pose
-space and checking each leaf with exact integer arithmetic\cite{Fort,MiraRepo}.
+R012's exact constant is $461300/99999$. Intermediate search reports reached
+$922600/199979$ with its measure fixed, and then $230650/49993$ by reweighting
+the same support. Their separate certificates are not retained here. The
+published replay covers R012, the final base certificate, and the recentering
+corollary.
 
-Burns' proposal made the decisive relaxation: assign nonnegative weights to
-many points, require every possible square to capture a prescribed amount of
-mass, and keep the total mass below 17\cite{Burns}.  Massaccesi used linear
-programming to improve the measure, and Levy turned the architecture into a
-reusable exact event-cell framework, obtaining $4.59$\cite{Levy}.  The present
-project's subsequent $4.607$ and $4.613$ certificates used the same fractional
-principle with more refined support and angular handling.
+An exact retained diagnostic explains one limit of changing only the core
+catalogue. At parent side $99989/100000$ in the side-$4.613$ container, a legal
+parent has R012 mass $0.998982$, below the mass required by its common-charge
+counting inequality. No inner core can have more mass than the parent. This
+obstructs that fixed measure at target $461300/99989$, rather than bounding
+$s(17)$ or the general method. The final certificate changes the measure by
+reweighting inherited sites and adding wall-adjusted support.
 
-Guzhou0806's R012 certificate identified a further overconstraint.  An
-auxiliary core may fit close to the wall even though the larger parent square
-from which it is supposed to arise cannot fit there.  R012 therefore checks a
-core only over the complete center domain attainable by parents in the
-corresponding angle interval and allows the core direction and size to vary
-with that interval\cite{Guzhou}.  The theorem below formalizes that reduction
-and is the proof interface used by our final certificate.
+\subsection{A limit on reusing the fixed core domains}\label{app:cap}
 
-For source links, verification status, and a more detailed division between
-direct dependencies and parallel historical work, see the repository file
-\path{CONTRIBUTORS.md}.
-
-\subsection{Stage I: unavoidable points and exact pose-space subdivision}
-
-Green's classical argument places sixteen witnesses so that every admissible
-unit square meets at least one of them.  The proof is then a pigeonhole
-argument: seventeen disjoint interiors cannot be assigned seventeen distinct
-witnesses from a set of size sixteen.  The weakness is geometric rather than
-combinatorial---one must prove a universal statement over all translations and
-orientations of one square.
-
-The 2026 exact-point certificates, including Brandwijk's $4.45$, Mira's
-$4.450837$ and later $4.468292$, and Fort's $4.456575$, attack precisely this
-universal geometric step.  They partition the three-dimensional pose space
-(center $x$, center $y$, orientation) into finitely many rational boxes and
-certify each box either infeasible or pierced by a witness point.  Fort's work
-is especially useful historically because it independently optimized the same
-basic exact architecture.  These results differ numerically but share the same
-integral counting invariant:
+The recentering argument admits a simple upper bound on what the unchanged
+core shapes and certified domains alone can prove. For an axis-aligned parent,
+write $W_j=B_jf(t_j)$. Lemma~\ref{lem:recenter} requires
 \[
-  \text{total witness budget}=16<17.
+  a>W_j,\qquad H<2a+2d_j-W_j.
 \]
-
-\subsection{Stage II: fractionalize the witness budget}
-
-Burns' weighted formulation replaces the discrete set of sixteen unit witnesses
-by a nonnegative atomic measure of total mass below $17$.  Every admissible
-square must capture at least unit mass.  The pigeonhole principle is replaced
-by additivity over disjoint interiors:
+These inequalities follow already by considering a corner parent center.
+Thus even if the choice of entry depends on that center, some entry must
+satisfy them. For $a>W_j$,
 \[
-  17
-  \le \sum_{i=1}^{17}\mu(U_i)
-  \le \mu(\Q_L)
-  <17.
+  \frac Ha<2+\frac{2d_j-W_j}{a}
+  \le\max\left\{2,\,1+\frac{2d_j}{W_j}\right\}.
 \]
-This relaxation can place small amounts of mass at many locations and is
-strictly more flexible than sixteen points of weight one.
-
-Massaccesi showed that the support and weights could be chosen effectively by
-linear programming, raising the numerical bound substantially.  The
-anabologyco-maker certificate pushed the same weighted idea much farther with a
-large exact orientation partition and an additional Lean-checked finite layer.
-Levy then supplied a reusable generator and exact event-cell sweep, together
-with an interval-based cross-check and later dilation machinery.  In our
-subsequent continuation, finer angular control, mixed wall/interior support,
-and dual-guided column generation raised the weighted method through
-$4.607028598640\ldots$ and then $4.613028635886\ldots$.
-
-Mathematically, all of these results retain the same global invariant:
+Consequently any such reuse argument has
 \[
-  \text{least charge per selected core}\times17
-  >
-  \text{total available budget}.
+  \frac Ha\le C_*:=\max_j\max\left\{2,\,1+\frac{2d_j}{W_j}\right\},
+  \qquad C_*\approx4.614153538422734.
 \]
-The improvements come from making the finite coverage problem easier to
-satisfy without increasing that budget.
-
-\subsection{Stage III: make the core transport parent aware}
-
-The remaining inefficiency is subtler.  Earlier weighted verifiers asked for
-coverage of every auxiliary core position allowed by the core's own geometry.
-But a core is not a physical packed square; it is only a device chosen inside a
-larger parent.  Some core centers near the container wall cannot arise from any
-legal parent at the corresponding orientation.
-
-Guzhou0806's R012 exploits this distinction.  It partitions the parent-angle
-continuum into intervals, chooses one safe core recipe per interval, and checks
-coverage only over the union of centers attainable by the actual parents in
-that interval.  This is a weakening of the verification obligation while
-preserving the physical theorem.  The present work keeps that relaxation,
-makes the interval/core selection adaptive, and then changes the underlying
-measure once the frozen R012 measure reaches an exact obstruction.
-
-This gives a precise sense in which the current proof \emph{subsumes} the
-earlier methods: the final counting theorem still contains the classical
-pigeonhole invariant, fractional weights contain the exact-point method as an
-integral special case, and parent-aware transport removes a constraint that is
-irrelevant to the physical packing problem.
-
-\section{Parent-aware weighted certificates}
-
-The counting argument has a slightly more general form that separates the
-geometric question from the particular choice of atoms.
-
-\begin{lemma}[Budgeted disjoint-core principle]\label{lem:budget}
-Let $C(K)\ge0$ be a charge assigned to closed cores $K\subseteq\Q_L$.  Suppose
-there is a global budget $\mathcal B$ such that every finite pairwise-disjoint
-family of cores satisfies
-\[
-  \sum_i C(K_i)\le \mathcal B.
-\]
-If every legal parent square admits a closed core strictly inside it with
-charge at least $\gamma$, and if
-\[
-  \mathcal B<n\gamma,
-\]
-then $n$ pairwise interior-disjoint parents cannot fit in the container.
-\end{lemma}
-
-\begin{proof}
-Choose one certified core from each hypothetical parent.  Since every core is
-a closed subset of its parent interior, the selected cores are pairwise
-disjoint.  Their total charge is at least $n\gamma$, contradicting the budget.
-\end{proof}
-
-Ordinary point measures are the simplest realization: if
-$\mu=\sum_jw_j\delta_{p_j}$, set $C(K)=\mu(K)$ and
-$\mathcal B=\mu(\Q_L)$.  The same lemma also contains Levy's threshold atoms.
-For a finite set $S$, integer $k\ge1$, and weight $w\ge0$,
-a threshold atom $(S,k,w)$ contributes $w$ to $C(K)$ when
-$|K\cap S|\ge k$.  For pairwise-disjoint cores, the traces $K_i\cap S$ are
-disjoint, so at most $\lfloor |S|/k\rfloor$ cores can activate the atom.  Its
-global budget is therefore
-\[
-  w\left\lfloor\frac{|S|}{k}\right\rfloor.
-\]
-Budgets add over independent point and threshold atoms.  The current
-$4.614153\ldots$ certificate uses point atoms only; this more general statement
-is included to make precise how the parent-aware transport composes with the
-stronger charging rules already present in the literature.
-
-We now specialize to a finite nonnegative measure on $\Q_L$.  Fix an outer
-side $L$ and a parent side $A$, and let
-\[
-  \mu=\sum_j w_j\delta_{p_j}.
-\]
-We will associate to every legal parent square $P\subseteq\Q_L$ of side $A$
-a closed core $K(P)$ satisfying
-\[
-  K(P)\subset\interior P.
-\]
-Different parent orientations may use different core sides and directions.
-
-\begin{proposition}[Parent-aware counting principle]\label{prop:counting}
-Suppose every legal side-$A$ parent square $P\subseteq\Q_L$ admits a selected
-closed core $K(P)\subset\interior P$ with
-\[
-  \mu(K(P))\ge\gamma.
-\]
-If
-\[
-  17\gamma>\mu(\Q_L),
-\]
-then seventeen pairwise interior-disjoint side-$A$ squares do not fit in
-$\Q_L$.
-\end{proposition}
-
-\begin{proof}
-If $P_1,\ldots,P_{17}$ had pairwise disjoint interiors, then their selected
-closed cores would be pairwise disjoint sets.  Nonnegativity gives
-\[
-  17\gamma
-  \le \sum_{i=1}^{17}\mu(K(P_i))
-  =\mu\!\left(\bigcup_{i=1}^{17}K(P_i)\right)
-  \le\mu(\Q_L),
-\]
-a contradiction.
-\end{proof}
-
-The usual weighted proof is the special case $A=1$, $\gamma=1$, with one
-uniform family of cores.  Proposition~\ref{prop:counting} shows that neither
-normalization is necessary: only the ratio between the least selected-core
-mass and the total mass matters.
-
-\subsection{A finite certificate theorem that subsumes the recent methods}
-
-The computational proofs discussed in Section~\ref{sec:lineage} differ mostly
-in how they establish the hypothesis of Proposition~\ref{prop:counting}.  It is
-useful to isolate a single theorem that contains the current parent-aware
-architecture and makes those differences explicit.
-
-Let $G=D_4$ be the symmetry group of the outer square.  Fold the orientation of
-an individual physical square into the interval $[0,\pi/4]$ using its own
-quarter-turn symmetry and, when needed, a reflection of the container.  Let
-$u=\tan(\phi/2)$ be the folded half-angle parameter.
-
-\begin{theorem}[Finite parent-aware weighted certificate]\label{thm:finite}
-Fix $n\ge2$, outer side $L$, parent side $A$, a finite nonnegative
-$G$-invariant measure $\mu$ on $\Q_L$, and $\gamma>0$.  Suppose a finite
-collection of closed half-angle intervals
-\[
-  I_j=[a_j,b_j]
-\]
-covers the full folded orientation range.  For each $I_j$ choose a rational
-core half-angle $t_j$ and core side $B_j>0$.  Assume:
-
-\begin{enumerate}[label=(C\arabic*),leftmargin=2.6em]
-\item the intervals meet without gaps and cover every folded physical
-orientation;
-\item for every $u\in I_j$, the concentric side-$B_j$ square at direction
-$t_j$ lies strictly inside the side-$A$ parent at direction $u$;
-\item $D_j$ is a closed set containing every legal center of every side-$A$
-parent whose folded half-angle lies in $I_j$;
-\item every side-$B_j$ core at direction $t_j$ with center in $D_j$ has
-$\mu$-mass at least $\gamma$;
-\item $\mu(\Q_L)<n\gamma$.
-\end{enumerate}
-
-Then no packing of $n$ side-$A$ squares exists in $\Q_L$.  Consequently,
-\[
-  s(n)>\frac{L}{A}.
-\]
-\end{theorem}
-
-\begin{proof}
-Take a hypothetical packing and fold each parent separately.  Condition (C1)
-places its orientation in at least one $I_j$.  By (C2) choose the corresponding
-closed core strictly inside that parent; by (C3) its center belongs to the
-domain on which (C4) was verified.  $G$-invariance lets us unfold without
-changing the core's charge.  The selected cores lie in pairwise disjoint parent
-interiors, hence are disjoint sets.  Summing their charges gives
-\[
-  n\gamma\le \sum_i\mu(K_i)\le\mu(\Q_L),
-\]
-contradicting (C5).  Scaling a unit-square packing at side $L/A$ by $A$ would
-produce the forbidden parent packing.  Finally, compactness of the feasible
-packing space upgrades exclusion at the endpoint to the strict inequality.
-\end{proof}
-
-This theorem separates three logically different tasks: \emph{geometry of
-transport} (C1--C3), \emph{finite coverage} (C4), and \emph{global counting}
-(C5).  The sequence of recent improvements can be read as successively
-weakening unnecessary requirements in those three tasks.
-
-\paragraph{Sixteen unavoidable points.}
-Take integer atom weights, total mass $n-1$, and prove directly that every
-physical parent interior captures an atom.  This is the integral predecessor
-of (C4)--(C5).  Mira's and Fort's exact pose-space trees differ from the present
-proof mainly in how the universal coverage statement is finitized.
-
-\paragraph{Uniform weighted cores.}
-Burns, Massaccesi, Levy, and our earlier weighted certificates allow fractional
-weights but use a common core rule over a finite orientation net.  The
-strict-containment lemma transports each arbitrary parent to a nearby checked
-core.  This is Theorem~\ref{thm:finite} with $D_j$ taken to be the full domain
-where the auxiliary core itself fits.  That domain is safe but can be larger
-than the set of centers realizable by physical parents.
-
-\paragraph{Parent-aware cores.}
-Guzhou's R012 observes that (C3) only needs a superset of \emph{legal parent
-centers}, not every location where an auxiliary core happens to fit.  It also
-lets $(t_j,B_j)$ vary from interval to interval.  The present theorem retains
-that relaxation and adds adaptive interval refinement plus a new measure.
-
-Thus the current proof does not merely place the earlier record values in a
-timeline: it uses a theorem whose hypotheses expose exactly which constraints
-each successive method removed.
-
-\section{Continuous parent angles and exact center domains}
-Represent a folded parent orientation by the half-angle parameter
-\[
-  u=\tan(\phi/2),\qquad 0\le u<1.
-\]
-Then
-\[
-  c(u)=\frac{1-u^2}{1+u^2},\qquad
-  s(u)=\frac{2u}{1+u^2},
-\]
-and the axis-parallel width factor of a square at that orientation is
-\[
-  f(u)=c(u)+s(u)=\frac{1+2u-u^2}{1+u^2}.
-\]
-A side-$A$ parent with parameter $u$ can have its center precisely in
-\[
-  \left[\frac{Af(u)}2,L-\frac{Af(u)}2\right]^2.
-\]
-
-\begin{lemma}[Complete parent-center envelope]\label{lem:domain}
-For a closed parent-angle interval $[a,b]\subset[0,1)$, the union of all legal
-parent-center domains is the square
-\[
-  D_{a,b}=[r,L-r]^2,
-  \qquad
-  r=\frac A2\min\{f(a),f(b)\}.
-\]
-\end{lemma}
-
-\begin{proof}
-A direct differentiation gives
-\[
-  f'(u)=\frac{2(1-2u-u^2)}{(1+u^2)^2}.
-\]
-Hence $f$ has one interior maximum and no interior minimum.  The legal center
-squares are nested as their half-width changes, so their union is determined
-by the minimum value of $f$, attained at an endpoint.
-\end{proof}
-
-For a candidate core with half-angle parameter $t$ and side $B$, put
-$(c_t,s_t)=(c(t),s(t))$.  For a parent parameter $u$, its width across either
-parent normal is bounded by
-\[
-  B\left(c_tc(u)+s_ts(u)
-  +\abs{s_tc(u)-c_ts(u)}\right).
-\]
-On every retained interval the verifier checks that the relative angle stays
-within $\pi/4$, so this factor is monotone with the absolute relative angle and
-its maximum occurs at an interval endpoint.  The strict rational inequality
-\begin{equation}\label{eq:contain}
-  B\max_{u\in\{a,b\}}
-  \left(c_tc(u)+s_ts(u)+\abs{s_tc(u)-c_ts(u)}\right)<A
-\end{equation}
-therefore proves that the concentric closed core lies strictly inside every
-parent throughout the whole continuous interval.
-
-The parent-center envelope matters quantitatively.  In the audited R012 data,
-one fixed auxiliary core has minimum captured mass $0.985238$ if every center
-where the core itself fits is demanded, but minimum $1.000288$ on the complete
-legal-parent envelope.  The deficient all-core placement is unattainable by a
-legal parent.  This exact ablation is retained with the current certificate.
-
-\section{Exact translation sweep}
-For one catalogue entry $(a,b,t,B)$, Lemma~\ref{lem:domain} supplies the exact
-closed center square $D_{a,b}$.  Rotate center coordinates into the selected
-core frame.  Each atom then contributes its weight exactly on a closed
-axis-parallel square of side $B$ in center space.
-
-The C++ verifier sweeps all vertical rectangle events and uses clamped
-extrema of the rotated parent-center domain to determine each slab's reachable
-vertical projection.  Within an open slab, the active rectangles
-are fixed.  Horizontal events partition the reachable vertical projection into
-open cells of constant charge.  Every positive-area reachable cell is checked,
-and a rational point in every reported minimum cell is directly recounted.
-All direction vectors are represented by rational half-angle parameters, and
-all geometry is reduced to integer or rational comparisons.
-
-Closed boundaries cannot conceal a lower charge.  Every boundary placement is
-a limit of non-event interior placements.  Because only finitely many cells
-exist, a subsequence approaches through one fixed cell; closed capture preserves
-all atoms present in that cell at the limit, and nonnegative weights prevent a
-decrease.  Thus the finite sweep proves the minimum over the entire closed
-parent-center domain.
-
-The certificate uses the eight symmetries of the outer square to store atoms in
-$D_4$-orbits.  This constrains the measure only; a hypothetical packing is not
-assumed symmetric.  Each parent is folded individually, assigned one catalogue
-core, and then unfolded.
-
-
-\section{Reusing certified coverage by recentering cores}\label{sec:recenter}
-
-The parent-aware theorem above still chooses a core concentric with its parent.
-That condition is convenient, but it is not part of the counting argument.
-Only strict containment is required.  This observation lets us reuse an
-already certified core library for nearby parent/container parameters without
-assuming any continuity of the atomic measure.
-
-Suppose a previously certified core shape $K_j$ has a certified center domain
-$D_j$ and charge at least $\gamma$ for every translate $y+K_j$ with
-$y\in D_j$.  For a centered parent shape $P$, define its
-\emph{erosion domain}
-\[
-  E_j(P)=\{v:v+K_j\subset\interior P\}.
-\]
-A parent centered at $x$ can use this core entry exactly when there is
-$y\in D_j$ with $y-x\in E_j(P)$, equivalently
-\[
-  x\in D_j-E_j(P).
-\]
-For centrally symmetric squares $E_j(P)=-E_j(P)$, so this is the Minkowski
-sum $D_j+E_j(P)$.  Hence an entire legal parent-center set is covered whenever
-it lies in the union of these translated erosion domains.
-
-\begin{proposition}[Recentered-core transfer]\label{prop:recenter}
-Assume a charge $C$ has budget $\mathcal B$ on pairwise-disjoint cores, and
-that every translate $y+K_j$ with $y\in D_j$ has charge at least $\gamma$.
-If, for every legal parent pose $P+x$, its center $x$ lies in
-\[
-  \bigcup_j(D_j-E_j(P)),
-\]
-then every parent can choose a strictly interior certified core.  If
-$\mathcal B<n\gamma$, no packing of $n$ such parents exists.
-\end{proposition}
-
-\begin{proof}
-Choose an index $j$ and $y\in D_j$ with $y-x\in E_j(P)$.  Then
-$y+K_j\subset\interior(P+x)$ and has charge at least $\gamma$.  Apply
-Lemma~\ref{lem:budget} to the selected cores.
-\end{proof}
-
-Use one common container-centered coordinate frame for the old and new
-domains; the new container lies inside the old one. The old measure and its
-total budget remain available without moving any atoms.
-For the square domains in the current certificate this condition becomes a
-single exact scalar inequality.  Let the new parent have side $a$, angle
-$\phi\in[0,\pi/4]$, and outer side $H$, and set
-\[
-  f(\phi)=\cos\phi+\sin\phi.
-\]
-Its legal centers form a square of half-side
-\[
-  q=\frac{H-af(\phi)}2.
-\]
-Suppose old core entry $j$ has side $B_j$, angle $\theta_j$, and certified
-center domain $[-d_j,d_j]^2$.  Its width across either parent normal is
-\[
-  w_j(\phi)
-  =
-  B_j\bigl(
-    |\cos(\theta_j-\phi)|+|\sin(\theta_j-\phi)|
-  \bigr).
-\]
-
-\begin{lemma}[Exact square recentering criterion]\label{lem:square-recenter}
-Assume $q\ge0$ and $d_j\ge0$. Every legal center of the new parent can use
-entry $j$ if and only if
-\[
-  \boxed{
-  w_j(\phi)
-  +f(\phi)\,[H-af(\phi)-2d_j]_+
-  <a.
-  }
-  \tag{R}
-\]
-Equivalently,
-\[
-  w_j(\phi)<a,\qquad
-  H<
-  af(\phi)+2d_j+\frac{a-w_j(\phi)}{f(\phi)}.
-\]
-\end{lemma}
-
-\begin{proof}
-Clamp each coordinate of the parent center into $[-d_j,d_j]$.  Each coordinate
-moves by at most $[q-d_j]_+$.  Projection of that displacement on either parent
-normal is at most $f(\phi)[q-d_j]_+$.  Adding the core half-width gives
-sufficiency of (R).
-
-For necessity when $q>d_j$, put the parent center at $(q,q)$.  Every available
-core center has both coordinates at most $d_j$, so its displacement projected
-on the parent normal $(\cos\phi,\sin\phi)$ is at least
-$f(\phi)(q-d_j)$.  Thus no other recentering can improve the extreme corner.
-When $q\le d_j$, only $w_j(\phi)<a$ is needed.
-\end{proof}
-
-This criterion is exact.  It reuses mass statements only at core centers that
-were already certified; no continuity of $\mu$ under translation is assumed.
-
-\subsection{A finite scalar sharpening of the base certificate}
-
-For old catalogue row $j$ with parent interval $I_j$, define
-\[
-  m_j=\min_{u\in I_j}f(u),\qquad
-  G_j=\max_{u\in I_j}g(t_j,u),\qquad
-  \eta_j=A-B_jG_j.
-\]
-Its old certified center-domain half-side is
-\[
-  d_j=\frac{L-Am_j}{2}.
-\]
-Decrease the parent side and outer side to
-\[
-  a=A-\varepsilon,\qquad H=L-\delta.
-\]
-If $F_j$ is any upper bound for $f$ throughout $I_j$, then
-Lemma~\ref{lem:square-recenter} is implied by the simpler rational condition
-\[
-  \boxed{
-  \eta_j>
-  \varepsilon
-  +F_j[\varepsilon F_j-\delta]_+
-  }
-  \tag{S}
-\]
-for every row.  Indeed, the bracket bounds the extra center displacement
-needed to clamp a new legal parent center back into the old certified domain,
-while $\eta_j-\varepsilon$ is the remaining strict containment margin.
-
-For the retained 4,391-row catalogue choose
-\[
-  \varepsilon=10^{-11},
-  \qquad
-  \delta=\frac{141}{10^{13}}.
-\]
-Using exact endpoint maxima for $F_j$ unless the interval crosses the maximum
-of $f$, and the rational upper bound
-\[
-  \frac{1414213563}{10^9}>\sqrt2
-\]
-otherwise, all 4,391 inequalities (S) hold.  The minimum remaining scalar
-slack is the positive rational
-\[
-\frac{
-3156837929188515937426608335639966497291
-}{
-2009206832324365552240070870206040941943769650000000000
-}>0.
-\]
-The replay command evaluates these inequalities exactly in
-\path{sharpening.py}, including the minimum slack and the library cap below.
-No translation coverage calculation is repeated: the old core shapes and old
-certified center domains are used unchanged.
-
-The old budget inequality
-\[
-  17\gamma-M=\frac{4433}{500000000}>0
-\]
-is likewise unchanged.  Therefore the new parents of side
-$A-\varepsilon$ do not fit in the new container of side $L-\delta$, and
-scaling gives
-\[
-  s(17)>
-  \frac{L-\delta}{A-\varepsilon}
-  =
-  \boxed{
-  \frac{46129999999859}{9997499999900}
-  }.
-\]
-This proves Theorem~\ref{thm:main} from the base certificate and finitely many
-additional rational inequalities.
-
-\subsection{Why fixed-library recentering is almost exhausted}
-
-For an axis-aligned new parent, let
-\[
-  W_j=B_j(c(t_j)+s(t_j)).
-\]
-The recentering criterion implies
-\[
-  a>W_j,\qquad
-  H<2a+2d_j-W_j.
-\]
-Hence every argument that pays an axis-aligned parent using one of these
-unchanged core/domain statements satisfies
-\[
-  \frac Ha
-  \le
-  \max_j
-  \max\left\{
-    2,\,
-    1+\frac{2d_j}{W_j}
-  \right\}.
-\]
-For the present core/domain library this cap is
-\[
-  \frac{
-  783497431270959447209451212282201903
-  }{
-  169803068915384203003727378193801903
-  }
-  =
-  4.61415353842273443435\ldots.
-\]
-Thus the new rational corollary is already extremely close to the limit of
-this particular \emph{reuse} strategy.  This is not an upper bound on
-$s(17)$, on the underlying measure, or on certificates using new core shapes,
-new coverage domains, or stronger charge resources.
-
-\section{The base parent-aware certificate}
-Set
-\[
-  L=\frac{4613}{1000},\qquad A=\frac{3999}{4000}.
-\]
-The exact certificate contains 417 positive $D_4$ orbit rows, expanding to
-3,280 atoms.  It partitions the folded orientation range into 4,391 closed
-parent-angle intervals.  The full replay obtains
-\[
-  M:=\mu(\Q_L)
-  =\frac{4249997911}{250000000}
-  =16.999991644
-\]
-and
-\[
-  \gamma=\frac{100000003}{100000000}
-  =1.000000030.
-\]
-Therefore
-\[
-  17\gamma-M
-  =\frac{4433}{500000000}
-  =0.000008866>0.
-\]
-The exact event sweep checks 27,918,671 center slabs.  Two accumulation
-backends---a segment tree and a direct difference-array/prefix engine---agree
-on every interval minimum.  They share the same geometric partition and are
-therefore not described as independent geometric proofs.
-
-Proposition~\ref{prop:counting} excludes seventeen side-$A$ parents in
-$\Q_L$.  Scaling a hypothetical unit-square packing in a container of side
-$L/A$ by the factor $A$ would give precisely such a parent packing.  Hence no
-unit-square packing exists at
-\[
-  \frac LA
-  =\frac{4613/1000}{3999/4000}
-  =\frac{18452}{3999}.
-\]
-Since the minimum defining $s(17)$ is attained, exclusion at the displayed
-side gives the strict base theorem
-\[
-  s(17)>\frac{18452}{3999}
-  =4.61415353838459614903\ldots.
-\]
-Section~\ref{sec:recenter} then sharpens this base theorem to
-Theorem~\ref{thm:main} without changing the coverage certificate.
-
-The theorem-critical files are under
-\path{certificates/lower_bound_4p614153/}.  The certificate is stored as raw JSON; the verifier checks its
-SHA-256 before using it.  From the repository root, run
-\begin{verbatim}
-python3 certificates/lower_bound_4p614153/verify.py \
-  --output /tmp/n17 --upstream --direct
-\end{verbatim}
-followed by the package tests.  The replay requires Python 3.10+, a C++17
-compiler with OpenMP, and Boost headers.  Numerical optimization is not in the
-trusted proof path.
-
-\section{What R012 unlocked, and where the next limit moved}
-
-The improvement from R012 to the present theorem is itself naturally
-decomposed into three mathematical steps:
-
-\begin{center}
-\begin{tabular}{L{0.34\textwidth}L{0.25\textwidth}L{0.28\textwidth}}
-\toprule
-Change & Bound or reported target & Increment over previous row\\
-\midrule
-R012 parent-aware catalogue & $461300/99999=4.613046130461\ldots$ & ---\\
-Adaptive parent-aware cores, same measure & $922600/199979=4.613484415864\ldots$ & $0.000438285402\ldots$\\
-Reweight the same original locations & $230650/49993=4.613645910427\ldots$ & $0.000161494564\ldots$\\
-Add wall-adjusted support and reweight & $18452/3999=4.614153538385\ldots$ & $0.000507627957\ldots$\\
-Analytic recentering of certified core domains & $\frac{46129999999859}{9997499999900}$, $4.614153538417\ldots$ & $3.20495\times10^{-11}$\\
-\bottomrule
-\end{tabular}
-\end{center}
-
-The intermediate adaptive-only and same-support targets are historical search
-reports; their separate certificates are not retained here. The replay verifies
-R012, the final base certificate, and the analytic corollary.
-
-This decomposition is useful because the three gains come from different
-sources.  The first removes a verifier overconstraint.  The second changes only
-weights, showing that the parent-aware geometry exposed previously hidden
-slack in the support.  The third changes the support itself, which becomes
-necessary once an exact low-mass physical parent obstructs the frozen measure.
-
-With Guzhou's R012 measure held completely fixed, adaptive parent-aware core
-selection was reported to raise the target to
-\[
-  \frac{922600}{199979}=4.613484415863665\ldots.
-\]
-An exact legal parent then shows why further angle refinement alone stops
-helping that frozen measure: at target
-\[
-  \frac{461300}{99989}=4.613507485823440\ldots
-\]
-the entire parent captures only $0.998982$ mass, below the required common
-charge ratio.  No inner core of that parent can capture more mass than the
-parent itself.  This is a limitation of that fixed measure under the common
-charge rule, not an upper bound on $s(17)$.
-
-The final improvement therefore changes the measure.  Reweighting the inherited
-support first passes the fixed-measure obstruction; mixing retained sites with
-wall-adjusted copies then reaches $A=3999/4000$ and the headline theorem.  This
-separates two kinds of progress that had previously been conflated: improving
-the finite verifier, and improving the underlying measure.
-
-The remaining gap to Bidwell is still substantial.  Other work in this
-repository studies local optimality and compatibility-aware strengthenings, but
-no global proof of Bidwell optimality is claimed here.
-
-
-\section{Compatibility information as spatial charges}\label{sec:triggers}
-
-The point-measure method prices each core through additive spatial mass.  That
-relaxation can miss information about which individually admissible square
-poses can coexist.  We now describe a budgeted charge that
-converts finite overlap incompatibilities back into the same spatial
-containment language used by the event sweep.
-
-\subsection{Intersection-trigger atoms}
-
-Let $T_1,\ldots,T_m$ be nonempty finite sets of spatial points satisfying
-\[
-  T_i\cap T_j\ne\varnothing
-  \qquad(i\ne j).
-\]
-Define
-\[
-  C_T(K)
-  =
-  \mathbf 1\{\exists i:T_i\subseteq K\}.
-\]
-
-\begin{proposition}[Budget-one intersection trigger]\label{prop:trigger}
-For every pairwise-disjoint family of closed cores $K_1,\ldots,K_r$,
-\[
-  \sum_{\ell=1}^r C_T(K_\ell)\le1.
-\]
-\end{proposition}
-
-\begin{proof}
-If two disjoint cores were charged, they would contain triggers $T_i$ and
-$T_j$.  If $i=j$, both cores contain the same nonempty set.  If $i\ne j$,
-both contain a point in $T_i\cap T_j$.  Either conclusion contradicts
-disjointness.
-\end{proof}
-
-Levy's two-of-three threshold atom is a special case, obtained by taking the
-three two-element subsets of a three-point set as triggers.  More generally,
-if the triggers are not pairwise intersecting, their matching number---the
-largest number of pairwise-disjoint triggers---is a valid global budget.  Thus
-Lemma~\ref{lem:budget} simultaneously contains point measures, threshold atoms,
-and these compatibility charges.
-
-\subsection{Compiling an overlap clique into one spatial resource}
-
-Suppose $m\ge2$ square poses $V_1,\ldots,V_m$ have pairwise-overlapping interiors.
-Choose, for every pair, a common interior point
-\[
-  p_{ij}=p_{ji}\in\interior(V_i)\cap\interior(V_j),
-\]
-and define
-\[
-  T_i=\{p_{ij}:j\ne i\}.
-\]
-Then $V_i$ contains $T_i$, while
-$p_{ij}\in T_i\cap T_j$.  Proposition~\ref{prop:trigger} therefore gives one
-budget-one resource activating on the whole clique.  Strict overlap provides
-open pose neighborhoods of activation, so this construction is not tied to
-isolated exact poses.
-
-The retained example in \path{certificates/intersection_trigger_29/}
-contains 29 rational unit-square poses, 406 distinct pair witnesses, and 29
-triggers of size 28. The minimum witness margin inside its required source
-unit square is
-\[
-  \frac{314856211897415969021}{287142759881684900000000}
-  >\frac1{1000}.
-\]
-Thus every trigger remains inside its corresponding concentric closed
-side-$499/500$ core $K_i$, and $C_T(K_i)=1$ for all 29 cores.
-
-The supplied nonnegative weights $\lambda_i$ satisfy
-\[
-  S:=\sum_i\lambda_i=\frac{81407286808}{79999999999},
-  \qquad
-  \max_x\sum_i\lambda_i\mathbf1_{\interior V_i}(x)
-  =m:=\frac{59431493389}{79999999999}.
-\]
-The checker verifies this maximum directly on the 29 poses. It enumerates all
-vertex and edge-intersection abscissae, then all vertical interval cells in
-each of the resulting 1,475 open slabs. The covering set is constant in each
-cell. A point on an arrangement boundary cannot have a greater open-square
-load: every open square containing that point also contains a neighbourhood
-of it. A rational maximum witness is directly recounted.
-
-Since $K_i\subset\interior V_i$, the same pointwise upper bound holds for
-the closed cores, including their boundaries. Therefore any nonnegative
-measure $\nu$ dominating the trigger charge on these cores satisfies
-\[
-  S\le\sum_i\lambda_i\nu(K_i)
-  =\int\sum_i\lambda_i\mathbf1_{K_i}\,d\nu
-  \le m\nu(\mathbb R^2).
-\]
-Its total mass is consequently at least
-\[
-  \nu(\mathbb R^2)\ge\frac{S}{m}
-  =\frac{81407286808}{59431493389}
-  =1.3697668048682659\ldots>1,
-\]
-whereas the trigger resource has budget one. This proves a strict separation
-on the supplied finite family. It uses only these 29 poses, without assuming
-a load theorem for a larger source family, and does not change the numerical
-bound on $s(17)$.
-
-The source expansion also verifies 71 recorded unit-square activations with
-weight sum $99656162199/79999999999$, of which 68 survive shrinking to
-side $499/500$, with weight sum $96836866527/79999999999$. An independent
-8,405-slab arrangement check on those 71 poses gives maximum pointwise load
-$73959042636/79999999999<1$. This verifies the earlier 68-core separation
-of $1.2104608316026308\ldots$ without assuming the full source-family load
-claim; the normalized 29-pose argument above gives the stronger separation.
-
-\subsection{The continuous geometry remains two-dimensional}
-
-At a fixed core direction, rotate every point $p\in T_i$ to coordinates
-$(u_p,v_p)$.  A side-$B$ core centered at $(u,v)$ contains the entire trigger
-$T_i$ exactly when its center lies in the rectangle
-\[
-R_i=
-\left[
-\max_{p\in T_i}u_p-\frac B2,\,
-\min_{p\in T_i}u_p+\frac B2
-\right]
-\times
-\left[
-\max_{p\in T_i}v_p-\frac B2,\,
-\min_{p\in T_i}v_p+\frac B2
-\right],
-\]
-with a reversed interval interpreted as empty.  Hence the charge is the
-indicator of
-\[
-  R_1\cup\cdots\cup R_m.
-\]
-For $m$ triggers this is a union of at most $m$ rectangles at each
-direction.  Standard
-vertical-slab decomposition gives polynomial-size exact event geometry.  The
-pieces remain one resource with one budget; decomposing the union must not
-assign independent budgets to the pieces.
-
-For a general finite overlap graph $G$, choose one shared interior witness per
-certified overlap edge and let each vertex trigger contain its incident edge
-witnesses. Give each isolated vertex a private interior witness as well, so
-every trigger is nonempty. Charged disjoint cores select distinct, nonadjacent
-vertices of $G$, so any
-proved bound $\alpha(G)\le b$ yields budget $b$.  Cliques give $b=1$, while
-odd cycles and more complicated graphs can encode compatibility information
-not expressible by clique cuts alone.
-
-The current numerical lower bound does \emph{not} use intersection-trigger
-atoms.  This section supplies a general mathematical framework for
-future certificates: the parent-aware and recentering theorems apply unchanged
-to a total charge
-\[
-  C(K)=\mu(K)+\sum_r w_r C_{T^{(r)}}(K)
-\]
-with nonnegative weights $w_r$ and budget
-\[
-  \mu(\Q_L)+\sum_r w_r b_r.
-\]
-A future improvement requires proving the corresponding universal core-charge
-lower bound.
-
-\section{Contributors, attribution, and verification status}
-The present theorem and its analytic sharpening have one author, but they sit in an unusually collaborative
-and rapidly evolving computational lineage.  Direct mathematical and software
-dependencies are credited in the certificate's \path{ATTRIBUTION.md}; the
-repository's \path{CONTRIBUTORS.md} gives a broader chronological account with
-links to the public repositories, papers, and audit sources.
-
-In particular, the current parent-aware implementation uses the conceptual
-lineage of Levy's weighted/event-sweep work and Guzhou0806's concrete R012
-catalogue, while its spatial support descends from this repository's earlier
-measure.  The exact R012 source data used for replay are pinned to commit
-\texttt{931a0dfd64302e277057006e99388fe5c00b7f53}.  The retained copy of the
-R012 Python sweep preserves Joshua Levy's MIT notice.  Fort, Burns,
-Massaccesi, anabologyco-maker, MacIver, Green, Stromquist, Nagamochi, Bidwell,
-and others are cited for historical or parallel contributions as specified in
-\path{CONTRIBUTORS.md}; citation does not imply endorsement or coauthorship.
-
-The computation and exposition were developed with substantial AI assistance
-under human direction.  The mathematical claim rests on explicit rational
-data, the stated reduction, and executable exact verification.  This is a
-computer-assisted working preprint.  Independent external review and formal
-proof-assistant verification of the complete parent-aware argument remain open.
-
+The exact rational maximum is checked in the scalar replay. This is a limit
+on those unchanged core/domain statements, not an upper bound on $s(17)$ or
+on certificates using new shapes, domains, measures, or charges.
+
+\subsection{Additional trigger activations}
+
+The trigger checker also verifies 71 unit-square activations from the pinned
+source, of which 68 remain valid after shrinking to side $499/500$. The
+68 retained weights sum to $96836866527/79999999999$. A separate exact
+arrangement calculation on the 71 unit squares gives maximum pointwise load
+$73959042636/79999999999<1$. The integration argument used in
+Proposition~\ref{prop:separation} therefore verifies the earlier, weaker
+mass lower bound $96836866527/79999999999>1.21$ on the 68 cores. The 29-core
+result in the main text is stronger. Neither calculation assumes a load
+bound for all 616 poses in the larger source family.
+
+\clearpage
 \begin{thebibliography}{99}
 
 \bibitem{Friedman2009}
