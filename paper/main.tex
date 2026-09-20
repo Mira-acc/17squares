@@ -877,13 +877,57 @@ budget-one resource activating on the whole clique.  Strict overlap provides
 open pose neighborhoods of activation, so this construction is not tied to
 isolated exact poses.
 
-A quantitative separation from positive spatial mass would additionally
-require a finite family of closed cores $K_i$ and nonnegative weights
-$\lambda_i$ with pointwise load at most one, but
-$\sum_i\lambda_i C_T(K_i)>1$.  Indeed, any positive measure dominating
-$C_T$ on these cores would then have total mass greater than one by integration
-of the pointwise load inequality.  We do not assert a checked numerical
-instance of this separation here.
+The retained example in \path{certificates/intersection_trigger_29/}
+contains 29 rational unit-square poses, 406 distinct pair witnesses, and 29
+triggers of size 28. The minimum witness margin inside its required source
+unit square is
+\[
+  \frac{314856211897415969021}{287142759881684900000000}
+  >\frac1{1000}.
+\]
+Thus every trigger remains inside its corresponding concentric closed
+side-$499/500$ core $K_i$, and $C_T(K_i)=1$ for all 29 cores.
+
+The supplied nonnegative weights $\lambda_i$ satisfy
+\[
+  S:=\sum_i\lambda_i=\frac{81407286808}{79999999999},
+  \qquad
+  \max_x\sum_i\lambda_i\mathbf1_{\interior V_i}(x)
+  =m:=\frac{59431493389}{79999999999}.
+\]
+The checker verifies this maximum directly on the 29 poses. It enumerates all
+vertex and edge-intersection abscissae, then all vertical interval cells in
+each of the resulting 1,475 open slabs. The covering set is constant in each
+cell. A point on an arrangement boundary cannot have a greater open-square
+load: every open square containing that point also contains a neighbourhood
+of it. A rational maximum witness is directly recounted.
+
+Since $K_i\subset\interior V_i$, the same pointwise upper bound holds for
+the closed cores, including their boundaries. Therefore any nonnegative
+measure $\nu$ dominating the trigger charge on these cores satisfies
+\[
+  S\le\sum_i\lambda_i\nu(K_i)
+  =\int\sum_i\lambda_i\mathbf1_{K_i}\,d\nu
+  \le m\nu(\mathbb R^2).
+\]
+Its total mass is consequently at least
+\[
+  \nu(\mathbb R^2)\ge\frac{S}{m}
+  =\frac{81407286808}{59431493389}
+  =1.3697668048682659\ldots>1,
+\]
+whereas the trigger resource has budget one. This proves a strict separation
+on the supplied finite family. It uses only these 29 poses, without assuming
+a load theorem for a larger source family, and does not change the numerical
+bound on $s(17)$.
+
+The source expansion also verifies 71 recorded unit-square activations with
+weight sum $99656162199/79999999999$, of which 68 survive shrinking to
+side $499/500$, with weight sum $96836866527/79999999999$. An independent
+8,405-slab arrangement check on those 71 poses gives maximum pointwise load
+$73959042636/79999999999<1$. This verifies the earlier 68-core separation
+of $1.2104608316026308\ldots$ without assuming the full source-family load
+claim; the normalized 29-pose argument above gives the stronger separation.
 
 \subsection{The continuous geometry remains two-dimensional}
 

@@ -1,0 +1,2 @@
+# Preserve the supplied CSV bytes and their recorded SHA-256, including CRLF.
+clique-29-poses-with-weights.csv -text whitespace=cr-at-eol

@@ -92,10 +92,16 @@ $$p_{ij}=p_{ji}\in\operatorname{int}V_i\cap\operatorname{int}V_j$$
 
 for each pair, and set `T_i={p_ij:j != i}`. Every source square contains its own trigger, while every pair of triggers shares its designated witness. This compiles a pose clique into a charge based solely on containment of fixed spatial points. The budget applies to arbitrary cores, not only the source poses or their neighbourhoods.
 
-A numerical separation from positive spatial mass additionally requires an
-explicit fractional family with pointwise load at most one and trigger charge
-greater than one. The exploratory numerical example is not included as a
-verified result because its witness artifacts are not retained in this package.
+The supplied 29-pose witness family is now checked independently in
+[`intersection_trigger_29`](../../certificates/intersection_trigger_29/). Its
+weight sum is `81407286808/79999999999`, and its exact maximum pointwise
+load is `59431493389/79999999999`. Every trigger fits its source side-0.998
+core. Thus reproducing trigger coverage by positive spatial mass requires at
+least their ratio `81407286808/59431493389 > 1`, while the trigger budget is
+one. The original 71/68-pose activations and weight sums are also now verified
+from the pinned source data. An independent arrangement check on those 71
+poses gives maximum load `73959042636/79999999999 < 1`; no load theorem for
+the full 616-pose source family is assumed.
 
 ## 3. The coverage geometry stays two-dimensional
 

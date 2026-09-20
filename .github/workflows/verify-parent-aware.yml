@@ -5,12 +5,14 @@ on:
   push:
     paths:
       - 'certificates/lower_bound_4p614153/**'
+      - 'certificates/intersection_trigger_29/**'
       - 'verify_all.sh'
       - 'paper/**'
       - '.github/workflows/verify-parent-aware.yml'
   pull_request:
     paths:
       - 'certificates/lower_bound_4p614153/**'
+      - 'certificates/intersection_trigger_29/**'
       - 'verify_all.sh'
       - 'paper/**'
       - '.github/workflows/verify-parent-aware.yml'
@@ -49,3 +51,6 @@ jobs:
             --output /tmp/n17-parent-aware --upstream --direct
           python3 certificates/lower_bound_4p614153/test_verify.py
           python3 certificates/lower_bound_4p614153/check_diagnostics.py
+
+      - name: Verify finite intersection-trigger separation
+        run: python3 certificates/intersection_trigger_29/test_verify.py

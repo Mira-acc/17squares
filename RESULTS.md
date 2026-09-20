@@ -137,5 +137,7 @@ certificate families.
 
 The paper also proves an intersection-trigger construction. Pairwise-intersecting
 nonempty finite triggers define a budget-one charge, with fixed-direction
-coverage represented by a union of rectangles. No checked numerical separation
-from positive spatial mass or improved n=17 bound is claimed for this extension.
+coverage represented by a union of rectangles. The [29-pose package](certificates/intersection_trigger_29/) now verifies a
+strict numerical separation: positive mass reproducing its core coverage costs
+at least `81407286808/59431493389 = 1.3697668048682659...`, compared with
+trigger budget one. No improved n=17 packing bound is claimed for this extension.

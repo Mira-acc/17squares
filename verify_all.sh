@@ -14,4 +14,6 @@ python3 "$ROOT/certificates/lower_bound_4p614153/verify.py" \
 python3 "$ROOT/certificates/lower_bound_4p614153/test_verify.py"
 python3 "$ROOT/certificates/lower_bound_4p614153/check_diagnostics.py"
 
+python3 "$ROOT/certificates/intersection_trigger_29/test_verify.py"
+
 echo ALL_RETAINED_CHECKS_PASSED

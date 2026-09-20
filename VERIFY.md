@@ -95,3 +95,14 @@ bash certificates/lower_bound_4p468292/verify_archived.sh
 `verify_all.sh` retains the full historical regeneration command in addition to
 both weighted packages and the current parent-aware replay. Optimizer outputs
 are not part of the proof.
+
+## Finite intersection-trigger example
+
+The separate 29-pose separation and its geometric controls are checked with:
+
+```bash
+python3 certificates/intersection_trigger_29/verify.py
+python3 certificates/intersection_trigger_29/test_verify.py
+```
+
+This verifies the finite charge example, not a stronger packing bound.

@@ -72,3 +72,7 @@ also runs `sharpening.py` and writes `sharpening.result.json`, checking all
 The paper also proves a compatibility-aware extension using intersection-trigger
 atoms. The paper gives its budget proof and coverage geometry; it is not used in the
 numerical lower bound.
+
+The finite 29-pose example and independent pointwise-load checker are in
+[`intersection_trigger_29`](../certificates/intersection_trigger_29/). They
+verify a strict separation from positive spatial mass on those cores.

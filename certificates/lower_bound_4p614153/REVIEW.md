@@ -26,8 +26,8 @@ checks performed in this review.
 
 The manuscript now states the nonempty-domain assumption for its recentering
 equivalence and handles isolated vertices in its general trigger construction.
-Its numerical trigger-separation example has been removed because the separate
-pose, point, and fractional-weight witnesses are not supplied here. The general
+At this initial review, the numerical trigger-separation example was removed
+because the separate pose, point, and weight witnesses were unavailable. The general
 budget theorem remains, but is not used in the numerical packing bound.
 Intermediate search targets without retained certificates are labeled as
 historical reports. The rebuilt paper passed the warning checks and visual
@@ -44,3 +44,8 @@ python3 certificates/lower_bound_4p614153/check_diagnostics.py
 
 This is a source and exact-computation review, not external peer review or
 proof-assistant formalization.
+
+A subsequent review of supplied witnesses restored a self-contained 29-pose
+example with an exact pointwise-load check in `../intersection_trigger_29/`.
+A separate check also verifies the original 71/68-pose activation claims from
+the pinned source data. Neither example affects this packing bound.

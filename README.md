@@ -139,3 +139,8 @@ global coverage sweep.
 Second, **intersection-trigger atoms** compile finite pose incompatibilities
 into budgeted spatial charges. The paper proves their budget and describes their
 coverage geometry. They are not used in the headline numerical bound.
+
+The [verified 29-pose trigger example](certificates/intersection_trigger_29/)
+exhibits a budget-one charge whose coverage on those cores would require
+positive spatial mass at least `81407286808/59431493389 = 1.3697668048682659...`.
+Its independent exact load check does not change the packing bound.
