@@ -76,3 +76,5 @@ numerical lower bound.
 The finite 29-pose example and independent pointwise-load checker are in
 [`intersection_trigger_29`](../certificates/intersection_trigger_29/). They
 verify a strict separation from positive spatial mass on those cores.
+
+Dates in the lineage table are documented in [HISTORY-DATES.md](HISTORY-DATES.md).
