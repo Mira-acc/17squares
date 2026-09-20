@@ -1,0 +1,16 @@
+{
+  "format": "parent-aware-integration-v1",
+  "theorem": "s(17) > 18452/3999",
+  "certificate_transport": {
+    "kind": "raw-json",
+    "path": "certificate.json",
+    "json_sha256": "5ffb7746fb8aa8d436256710a035235436eecc5e6cfeca3d150dc01b18b801c3"
+  },
+  "upstream_R012": {
+    "repository": "Guzhou0806/n17-square-packing",
+    "commit": "931a0dfd64302e277057006e99388fe5c00b7f53",
+    "canonical_expanded_measure_sha256": "ae469399ced8580ddddcef6edc234cf9becd7e94df7752aa8b4f9cefcbaf3643",
+    "note": "Repository copies are normalized integration inputs reconstructed from the pinned source; exact mathematical identity is checked by the canonical expanded-measure digest and complete replay."
+  },
+  "trust_boundary": "verify.py hash-checks the current certificate, validates exact rational theorem conditions, replays the complete current and optional pinned-R012 parent catalogues, and checks the analytic recentering inequalities."
+}

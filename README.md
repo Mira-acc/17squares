@@ -1,98 +1,141 @@
 # Packing 17 unit squares in a square
 
+This repository archives exact lower-bound certificates, numerical constructions,
+and research code for the 17-squares-in-a-square problem.
+
 Let `s(17)` be the least side length of a square containing 17 pairwise
-interior-disjoint unit squares, with arbitrary orientations. This repository
-contains an exact computer-assisted proof that
+interior-disjoint unit squares, with arbitrary rotations.
+
+## Current interval
+
+The strongest retained exact computer-assisted lower bound is
 
 \[
-\boxed{s(17)>4.613028635886}.
+\boxed{s(17)>\frac{46129999999859}{9997499999900}}
+=\boxed{4.614153538416645696808\ldots}.
 \]
 
-The base certificate excludes a packing at side `4.613`. Uniform dilation gives
+The best known construction is John Bidwell's 1998 packing,
+
+\[
+\boxed{s(17)\le 4.6755300936045509516\ldots}.
+\]
+
+Thus the current retained interval is
+
+\[
+4.614153538416645696808\ldots<s(17)
+\le4.6755300936045509516\ldots.
+\]
+
+No global proof of Bidwell optimality is claimed.
+
+## Current theorem and parent-aware base certificate
+
+The computational base certificate is
+[`certificates/lower_bound_4p614153`](certificates/lower_bound_4p614153).
+It works in an outer square of side `L = 4.613` and excludes seventeen parent
+squares of side `A = 3999/4000`. Scaling gives the unit-square target
 
 ```text
-s(17) >= sqrt(17650291964463886688094912400 /
-             829429719507765981945905041)
-       = 4.6130286358861101094200443452...
+L/A = 18452/3999 = 4.61415353838459614903...
 ```
 
-The radical endpoint has a weak inequality; rational squaring verifies that the
-displayed strict decimal is smaller. The cited Bidwell construction gives the
-upper bound `s(17) <= 4.67553009360455...`.
+The base exact certificate has:
 
-## Read the proof
+- **3,280** weighted atoms in **417** positive `D4` orbits;
+- total mass **16.999991644**;
+- **4,391** continuous parent-angle intervals;
+- minimum selected-core mass **1.000000030**;
+- counting surplus `17*minimum - mass = 0.000008866`;
+- **27,918,671** exact center slabs in the full replay.
 
-- [Paper (PDF)](paper/17squares-lower-bound.pdf)
-- [LaTeX source](paper/main.tex) and [build notes](paper/README.md)
-- [Weighted certificate package](certificates/lower_bound_4p613/README.md)
-- [Exact weighted proof](certificates/lower_bound_4p613/PROOF.md)
-- [Attribution and source hashes](certificates/lower_bound_4p613/ATTRIBUTION.md)
-
-The measure assigns nonnegative rational weights to 1,620 atoms, with total
-mass 16.99798498 < 17. An exact sweep checks every admissible translation of a
-closed side-0.99985 core at 2,881 rational directions: the minimum mass is
-1.000002103 across 9,116,871 centre slabs. A strict containment inequality covers
-the intervening orientations and places the closed core inside the unit-square
-interior. Seventeen disjoint interiors would require mass at least 17.
-
-The initial 4.59 measure is credited to Joshua Levy's squares project under
-CC BY 4.0. The new certificate improves the preceding weighted bound
-`4.607028598640` through new spatial support and weights, with the same core
-side, direction net and exact kernel. The weighted principle and sharp dilation
-lemma are credited prior work.
-
-The [review notes](certificates/lower_bound_4p613/REVIEW.md) record the replay and
-scope checks. Exact diagnostics show that reweighting a specified old dictionary
-cannot pass the core test at 4.61, and that deleting 19 final-stage orbits breaks
-the new certificate. These are restricted statements, not global optimality
-claims. See the [research report](certificates/lower_bound_4p613/RESEARCH.md).
-
-## Verify
-
-Requirements: Python 3.10 or newer with its standard library, C++17 and Boost headers. The historical
-archive checks also require `xz`, `sha256sum` and POSIX shell tools.
-
-Replay the current theorem, both accumulation engines, 26 geometric controls, eight diagnostic controls,
-and the orbit-deletion checks:
+The base certificate's key improvement is **parent-aware coverage**. For an entire parent-angle
+interval, the verifier computes the complete center domain attainable by legal
+parent squares, selects a concentric core strictly inside every parent in that
+interval, and checks every translation of that core over that legal domain. This
+builds directly on Guzhou0806's R012 certificate and removes constraints arising
+from auxiliary cores that could fit near a wall even though their parent square
+could not.
 
 ```bash
-python3 certificates/lower_bound_4p613/verify.py --source
+python3 certificates/lower_bound_4p614153/verify.py \
+  --output /tmp/n17-parent-aware --upstream --direct
+python3 certificates/lower_bound_4p614153/test_verify.py
 ```
 
-Fully reproduce the current and preceding weighted theorems and historical
-triangle-witness certificate:
+The replay needs Python 3.10+, a C++17 compiler with OpenMP, and Boost headers.
+The numerical optimizer is not part of the trusted proof path.
+
+## Paper and research lineage
+
+The technical paper now proves an additional recentered-core analytic sharpening and develops a cumulative proof history: classical
+unavoidable points, exact pose-space certificates, weighted fractional covers,
+Levy's event-sweep machinery, Guzhou's parent-angle/legal-center reduction, and
+the present reweighted parent-aware certificate.
+
+- [Rendered PDF](paper/17squares-lower-bound.pdf)
+- [LaTeX source](paper/main.tex)
+- [Paper build notes](paper/README.md)
+- [Contributors and source links](CONTRIBUTORS.md)
+
+The contributors page distinguishes direct dependencies from parallel and
+historical results. It includes links for Mira, Stanislav Fort, Joshua Levy,
+Guzhou0806, Sam Burns, Gustavo Massaccesi's audited certificate, anabologyco-maker,
+Trevor Green/Friedman, Stromquist, Nagamochi, David MacIver, Bidwell, and other
+relevant sources.
+
+## Progression retained in this repository
+
+| Bound | Role |
+|---:|---|
+| `4.468292` | historical exact sixteen-point certificate with triangle witnesses |
+| `4.607028598640...` | weighted certificate plus exact dilation endpoint |
+| `4.613028635886...` | preceding weighted certificate plus dilation |
+| `4.614153538384596...` | parent-aware computational base theorem |
+| `4.614153538416645...` | current analytic recentering corollary |
+
+Additional intermediate and external milestones are documented in
+[`RESULTS.md`](RESULTS.md) and [`CONTRIBUTORS.md`](CONTRIBUTORS.md).
+
+## Repository map
+
+- [`certificates/lower_bound_4p614153`](certificates/lower_bound_4p614153) — current parent-aware exact certificate and replay.
+- [`certificates/lower_bound_4p607`](certificates/lower_bound_4p607) — previous weighted theorem and source lineage from Levy's 4.59 certificate.
+- [`certificates/lower_bound_4p613`](certificates/lower_bound_4p613) — preceding weighted theorem and diagnostics.
+- [`certificates/lower_bound_4p468292`](certificates/lower_bound_4p468292) — historical exact triangle-witness certificate.
+- [`paper`](paper) — current technical paper, source, and rendered PDF.
+- [`PROVENANCE.md`](PROVENANCE.md) — trust classes and claim discipline.
+- [`VERIFY.md`](VERIFY.md) — exact reproduction guide.
+
+All retained checks run with:
 
 ```bash
 bash ./verify_all.sh
 ```
 
-See [VERIFY.md](VERIFY.md) for exact statements, hashes and expected output.
-The [weighted replay workflow](.github/workflows/verify-weighted-cover.yml)
-checks the new package in CI. Optimizer dependencies are unnecessary for proof
-replay; optional discovery inputs are retained within the weighted package.
-
-## Preceding weighted result
-
-The [4.607 package](certificates/lower_bound_4p607/README.md) is retained unchanged
-with its exact measure and replay logs. It remains separately reproducible with
-`python3 certificates/lower_bound_4p607/verify.py --direct`.
-
-## Historical result
-
-The [4.468292 package](certificates/lower_bound_4p468292/README.md) remains
-unchanged. Its sixteen-point proof, strict triangle-piercing lemma, coordinates
-and checker interface are retained in the paper's appendix. The 122,626,747-byte
-tree is stored as a deterministic 374,096-byte XZ archive. Check it without
-regenerating the tree with:
-
-```bash
-bash certificates/lower_bound_4p468292/verify_archived.sh
-```
-
 ## Status and trust
 
-The weighted segment-tree and direct-prefix engines share one exact geometric
-partition; their agreement is an accumulation audit, not two independent
-geometric proofs. The three-checker independence statement belongs to the
-historical triangle-witness package. Neither numerical discovery nor a sampled
-LP result is trusted as a proof. External peer review remains pending.
+The current theorem is an exact computer-assisted proof with reproducible
+rational data and integer/rational verification. The two C++ accumulation
+backends in the current package share a geometric partition and are not
+represented as independent geometric proofs. The pinned R012 Python kernel is
+also replayable for the upstream parent-angle certificate.
+
+The repository does **not** claim peer review, a completed proof-assistant
+formalization of the parent-aware theorem, or global optimality of Bidwell's
+packing. Numerical search outputs remain research evidence rather than theorems.
+
+
+## Stronger mathematical framework
+
+The paper now proves two extensions beyond the base weighted certificate.
+
+First, certified cores may be **recentered inside their physical parent** rather
+than remaining concentric. An exact Minkowski/erosion criterion reuses the old
+coverage domains and yields the current rational headline bound without another
+global coverage sweep.
+
+Second, **intersection-trigger atoms** compile finite pose incompatibilities
+into budgeted spatial charges. The paper proves their budget and describes their
+coverage geometry. They are not used in the headline numerical bound.

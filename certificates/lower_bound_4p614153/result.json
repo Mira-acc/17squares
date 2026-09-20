@@ -1,0 +1,75 @@
+{
+  "record": "Mira parent-aware extension of Guzhou R012",
+  "date": "2026-09-19",
+  "claim": "s(17) > 18452/3999",
+  "target": "18452/3999",
+  "target_decimal_bracket": [
+    "4.61415353838459614903",
+    "4.61415353838459614904"
+  ],
+  "bracket_scope": "The rational lower-bound constant, not the unknown optimum s(17).",
+  "optimality_proved": false,
+  "certificate_sha256": "5ffb7746fb8aa8d436256710a035235436eecc5e6cfeca3d150dc01b18b801c3",
+  "verified_parameters": {
+    "status": "PASS_COMPLETE_PARENT_CATALOGUE",
+    "target": "18452/3999",
+    "strict_lower_bound": true,
+    "parent_side": "3999/4000",
+    "atoms": 3280,
+    "positive_atoms": 3280,
+    "orbits": 417,
+    "positive_orbits": 417,
+    "intervals": 4391,
+    "minimum": "100000003/100000000",
+    "mass": "4249997911/250000000",
+    "counting_margin": "4433/500000000",
+    "minimum_containment_margin": "1607618012893827523067050824831683950874799/160736546585949244179205669616483275355501572000000000",
+    "center_slabs": 27918671,
+    "coverage_sha256": "2d05789c0c95e3040cf64c2d9fe1a444c413ebea3eb3f634014b84f081ae4f47",
+    "seconds": 18.675838161999764
+  },
+  "R012_source_commit": "931a0dfd64302e277057006e99388fe5c00b7f53",
+  "R012_target": "461300/99999",
+  "exact_improvement_over_R012": "147616/133298667",
+  "exact_squared_improvement_over_Mira_endpoint": "137678579762420449971949098936064/13264240903797913091044895361577041",
+  "verification": {
+    "cpp_segment_tree_full": true,
+    "cpp_direct_prefix_full": true,
+    "cpp_backends_share_geometry": true,
+    "test_methods_passed": 22,
+    "formalized_in_proof_assistant": false,
+    "external_peer_review_claimed": false,
+    "review_date": "2026-09-20",
+    "exact_analytic_sharpening": true
+  },
+  "fixed_measure": {
+    "blocked_target": "461300/99989",
+    "blocked_parent_mass": "499491/500000",
+    "scope": "Unchanged R012 measure under common-minimum covering/counting, including uniform weight rescalings.",
+    "intermediate_certificate_retained": false,
+    "reported_target": "922600/199979"
+  },
+  "higher_trial_without_certificate": {
+    "A": "9997/10000",
+    "target": "46130/9997",
+    "scope": "Several particular dictionaries and core catalogues; no exact impossibility or method ceiling is claimed."
+  },
+  "threshold_transport_generalization_proved": true,
+  "n17_threshold_certificate_computed": false,
+  "repository_integration": "Mira-Cult/17squares: certificates/lower_bound_4p614153 (2026-09-19)",
+  "analytic_sharpening": {
+    "status": "PASS_EXACT_RECENTERING_INEQUALITIES",
+    "target": "46129999999859/9997499999900",
+    "epsilon": "1/100000000000",
+    "delta": "141/10000000000000",
+    "intervals": 4391,
+    "minimum_scalar_slack": "3156837929188515937426608335639966497291/2009206832324365552240070870206040941943769650000000000",
+    "fixed_library_axis_cap": "783497431270959447209451212282201903/169803068915384203003727378193801903"
+  },
+  "historical_bundle_verification_reports": {
+    "R012_published_python_kernel_all_2925": true,
+    "new_published_python_kernel_selected_entries": 13,
+    "new_python_kernel_full": false,
+    "repeated_in_2026_09_20_review": false
+  }
+}

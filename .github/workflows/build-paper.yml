@@ -1,0 +1,65 @@
+name: Build technical note
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "paper/**/*.tex"
+      - ".github/workflows/build-paper.yml"
+  pull_request:
+    paths:
+      - "paper/**/*.tex"
+      - ".github/workflows/build-paper.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install LaTeX and PDF tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            latexmk lmodern texlive-latex-extra texlive-fonts-recommended \
+            texlive-pictures ghostscript poppler-utils
+
+      - name: Render technical note
+        run: |
+          set -euo pipefail
+          cd paper
+          latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+          gs -sDEVICE=pdfwrite \
+             -dCompatibilityLevel=1.6 \
+             -dPDFSETTINGS=/prepress \
+             -dNOPAUSE -dQUIET -dBATCH \
+             -sOutputFile=17squares-lower-bound.rendered.pdf \
+             main.pdf
+          mv 17squares-lower-bound.rendered.pdf 17squares-lower-bound.pdf
+          pdfinfo 17squares-lower-bound.pdf
+          ! grep -Eq "LaTeX Warning|Package .* Warning|Overfull|Underfull|^!" main.log
+
+      - name: Commit rendered PDF
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add paper/17squares-lower-bound.pdf
+          if git diff --cached --quiet; then
+            echo "Rendered PDF already matches the source."
+          else
+            git commit -m "Render technical note [skip ci]"
+            git push
+          fi
